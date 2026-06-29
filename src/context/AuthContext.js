@@ -29,7 +29,6 @@ export function AuthProvider({ children }) {
 
   const register = async (email, password, name) => {
     await apiService.register(email, password, name);
-    // El registro solo crea el usuario, luego el usuario debe hacer login
   };
 
   const login = async (email, password) => {
@@ -47,7 +46,7 @@ export function AuthProvider({ children }) {
 
   const verifyOtp = async (email, code) => {
     const res = await apiService.verifyOtp(email, code);
-    const newToken = res.data.customToken;
+    const newToken = res.data.idToken || res.data.customToken;
     const userData = res.data.user;
     await AsyncStorage.setItem('token', newToken);
     setToken(newToken);

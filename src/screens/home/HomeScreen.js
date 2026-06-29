@@ -41,14 +41,16 @@ export default function HomeScreen({ navigation }) {
     const load = async () => {
       try {
         const preferencias = user?.preferences || [];
-        const [recRes, notRes] = await Promise.all([
+        const [recRes, notRes] = await Promise.allSettled([
           getRecomendadas(preferencias),
           getNoticias(),
         ]);
-        setRecomendadas(recRes.data);
-        setNoticias(notRes.data);
-      } catch (e) {
-        Alert.alert('Error', 'No se pudieron cargar los datos');
+        if (recRes.status === 'fulfilled') {
+          setRecomendadas(recRes.value.data?.actividades || recRes.value.data || []);
+        }
+        if (notRes.status === 'fulfilled') {
+          setNoticias(notRes.value.data?.noticias || notRes.value.data || []);
+        }
       } finally {
         setLoading(false);
       }
@@ -79,12 +81,12 @@ export default function HomeScreen({ navigation }) {
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
         <View>
-          <Text style={styles.saludo}>¡Hola, {user?.nombre || 'Viajero'}!</Text>
+          <Text style={styles.saludo}>¡Hola, {user?.name || 'Viajero'}!</Text>
           <Text style={styles.subSaludo}>¿A dónde viajamos hoy?</Text>
         </View>
         <View style={styles.avatar}>
           <Text style={styles.avatarText}>
-            {(user?.nombre?.[0] || 'U').toUpperCase()}
+            {(user?.name?.[0] || 'U').toUpperCase()}
           </Text>
         </View>
       </View>
