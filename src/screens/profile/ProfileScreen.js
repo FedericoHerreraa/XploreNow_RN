@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, ScrollView,
-  StyleSheet, Alert, ActivityIndicator, Image, KeyboardAvoidingView, Platform,
+  StyleSheet, Alert, ActivityIndicator, Image,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -141,8 +141,8 @@ export default function ProfileScreen() {
   const reservasFinalizadas = reservas.filter(r => r.estado === 'finalizada');
 
   return (
-    <KeyboardAvoidingView style={styles.wrapper} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-    <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+    <View style={styles.wrapper}>
+    <ScrollView contentContainerStyle={styles.content}>
 
       {/* Header */}
       <View style={styles.header}>
@@ -315,6 +315,7 @@ export default function ProfileScreen() {
     </ScrollView>
     </View>
   );
+
 }
 
 const styles = StyleSheet.create({
