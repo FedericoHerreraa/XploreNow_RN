@@ -141,8 +141,8 @@ export default function ProfileScreen() {
   const reservasFinalizadas = reservas.filter(r => r.estado === 'finalizada');
 
   return (
-    <View style={styles.wrapper}>
-    <ScrollView contentContainerStyle={styles.content}>
+    <KeyboardAvoidingView style={styles.wrapper} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
 
       {/* Header */}
       <View style={styles.header}>
