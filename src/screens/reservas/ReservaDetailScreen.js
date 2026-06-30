@@ -1,35 +1,94 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  View, Text, TouchableOpacity,
+  View, Text, TouchableOpacity, Linking,
   StyleSheet, Alert, ActivityIndicator, ScrollView,
 } from 'react-native';
-import { useState } from 'react';
-import { cancelarReserva } from '../../api/apiService';
+import { getActividadById, cancelarReserva } from '../../api/apiService';
+
+const ESTADO_COLORS = {
+  pendiente: '#FF9800',
+  confirmada: '#4CAF50',
+  finalizada: '#607D8B',
+  cancelada: '#F44336',
+};
 
 export default function ReservaDetailScreen({ route, navigation }) {
-  const { reservaId, actividadId, fecha, horario } = route.params || {};
-  const [loading, setLoading] = useState(false);
-  const [cancelada, setCancelada] = useState(false);
+  const {
+    reservaId,
+    actividadId,
+    nombre,
+    fecha,
+    horario,
+    cantidadParticipantes,
+    estado: estadoInicial,
+  } = route.params || {};
+
+  const [actividad, setActividad] = useState(null);
+  const [loadingAct, setLoadingAct] = useState(true);
+  const [estado, setEstado] = useState((estadoInicial || 'confirmada').toLowerCase());
+  const [cancelando, setCancelando] = useState(false);
+
+  useEffect(() => {
+    if (!actividadId) {
+      setLoadingAct(false);
+      return;
+    }
+    (async () => {
+      try {
+        const res = await getActividadById(actividadId);
+        setActividad(res.data);
+      } catch {
+      } finally {
+        setLoadingAct(false);
+      }
+    })();
+  }, [actividadId]);
+
+  const politica = actividad?.politica_cancelacion;
+  const puedeCancelar = estado !== 'cancelada' && estado !== 'finalizada';
+
+  // Punto 10: abre Google Maps (o la app de mapas por defecto) con la dirección
+  // del punto de encuentro precargada en modo navegación.
+  const abrirComoLlegar = async () => {
+    const direccion = actividad?.punto_encuentro;
+    if (!direccion) return;
+    const url = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(direccion)}`;
+    try {
+      await Linking.openURL(url);
+    } catch {
+      Alert.alert('Error', 'No se pudo abrir la aplicación de mapas.');
+    }
+  };
 
   const handleCancelar = () => {
+    const detallePolitica = politica
+      ? `\n\nPolítica de cancelación aplicable:\n${politica}`
+      : '';
     Alert.alert(
       'Cancelar reserva',
-      '¿Estás seguro de que querés cancelar esta reserva?',
+      `¿Seguro que querés cancelar esta reserva?${detallePolitica}`,
       [
         { text: 'No', style: 'cancel' },
         {
           text: 'Sí, cancelar',
           style: 'destructive',
           onPress: async () => {
-            setLoading(true);
+            setCancelando(true);
             try {
               await cancelarReserva(reservaId);
-              setCancelada(true);
-              Alert.alert('Éxito', 'Reserva cancelada correctamente');
+              setEstado('cancelada');
+              Alert.alert('Reserva cancelada', 'Tu reserva fue cancelada correctamente.', [
+                { text: 'OK', onPress: () => navigation.goBack() },
+              ]);
             } catch (e) {
-              Alert.alert('Error', e?.response?.data?.message || 'No se pudo cancelar la reserva');
+              Alert.alert(
+                'Error',
+                e?.response?.data?.message ||
+                  e?.response?.data?.error ||
+                  'No se pudo cancelar la reserva'
+              );
             } finally {
-              setLoading(false);
+              setCancelando(false);
             }
           },
         },
@@ -38,9 +97,14 @@ export default function ReservaDetailScreen({ route, navigation }) {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 32 }}>
       <View style={styles.card}>
-        <Text style={styles.title}>Detalle de Reserva</Text>
+        <View style={styles.titleRow}>
+          <Text style={styles.title}>{nombre || actividad?.nombre || 'Detalle de reserva'}</Text>
+          <View style={[styles.estadoBadge, { backgroundColor: ESTADO_COLORS[estado] || '#999' }]}>
+            <Text style={styles.estadoText}>{estado}</Text>
+          </View>
+        </View>
 
         <View style={styles.row}>
           <Text style={styles.label}>Fecha</Text>
@@ -55,20 +119,82 @@ export default function ReservaDetailScreen({ route, navigation }) {
         <View style={styles.divider} />
 
         <View style={styles.row}>
-          <Text style={styles.label}>Estado</Text>
-          <Text style={[styles.value, cancelada && { color: '#F44336' }]}>
-            {cancelada ? 'cancelada' : 'confirmada'}
-          </Text>
+          <Text style={styles.label}>Participantes</Text>
+          <Text style={styles.value}>{cantidadParticipantes ?? '—'}</Text>
         </View>
 
-        {!cancelada && (
-          loading ? (
-            <ActivityIndicator color="#F44336" style={{ marginTop: 24 }} />
+        {actividad?.punto_encuentro && (
+          <>
+            <View style={styles.divider} />
+            <View style={styles.row}>
+              <Text style={styles.label}>Punto de encuentro</Text>
+              <Text style={[styles.value, styles.valueWrap]}>{actividad.punto_encuentro}</Text>
+            </View>
+            <TouchableOpacity style={styles.btnComoLlegar} onPress={abrirComoLlegar}>
+              <Text style={styles.btnComoLlegarText}>🗺️  Cómo llegar</Text>
+            </TouchableOpacity>
+          </>
+        )}
+
+        {actividad?.guia && (
+          <>
+            <View style={styles.divider} />
+            <View style={styles.row}>
+              <Text style={styles.label}>Guía</Text>
+              <Text style={styles.value}>{actividad.guia}</Text>
+            </View>
+          </>
+        )}
+      </View>
+
+      {/* Política de cancelación */}
+      <View style={styles.card}>
+        <Text style={styles.seccionLabel}>Política de cancelación</Text>
+        {loadingAct ? (
+          <ActivityIndicator color="#2196F3" style={{ marginTop: 8 }} />
+        ) : (
+          <Text style={styles.parrafo}>
+            {politica || 'No se especificó una política de cancelación para esta actividad.'}
+          </Text>
+        )}
+      </View>
+
+      {/* Acciones */}
+      <View style={styles.acciones}>
+        {puedeCancelar ? (
+          cancelando ? (
+            <ActivityIndicator color="#F44336" style={{ marginTop: 8 }} />
           ) : (
             <TouchableOpacity style={styles.btnCancelar} onPress={handleCancelar}>
-              <Text style={styles.btnCancelarText}>Cancelar Reserva</Text>
+              <Text style={styles.btnCancelarText}>Cancelar reserva</Text>
             </TouchableOpacity>
           )
+        ) : (
+          <Text style={styles.noCancelable}>
+            {estado === 'cancelada'
+              ? 'Esta reserva ya fue cancelada.'
+              : 'Esta actividad ya finalizó y no puede cancelarse.'}
+          </Text>
+        )}
+
+        {estado === 'confirmada' && (
+          <TouchableOpacity
+            style={styles.btnVoucher}
+            onPress={() =>
+              navigation.navigate('Voucher', {
+                reservaId,
+                actividadId,
+                nombre: nombre || actividad?.nombre,
+                fecha,
+                horario,
+                cantidadParticipantes,
+                puntoEncuentro: actividad?.punto_encuentro,
+                guia: actividad?.guia,
+              })
+            }
+          >
+            <Text style={styles.btnVoucherText}>Ver voucher</Text>
+          </TouchableOpacity>
         )}
 
         {actividadId && (
@@ -76,7 +202,7 @@ export default function ReservaDetailScreen({ route, navigation }) {
             style={styles.btnVer}
             onPress={() => navigation.navigate('ActividadDetail', { actividadId })}
           >
-            <Text style={styles.btnVerText}>Ver Actividad</Text>
+            <Text style={styles.btnVerText}>Ver actividad</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -86,14 +212,31 @@ export default function ReservaDetailScreen({ route, navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8F9FA' },
-  card: { margin: 20, backgroundColor: '#fff', borderRadius: 12, padding: 20, elevation: 2, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 4 },
-  title: { fontSize: 20, fontWeight: 'bold', color: '#333', marginBottom: 20 },
+  card: { marginHorizontal: 20, marginTop: 20, backgroundColor: '#fff', borderRadius: 12, padding: 20, elevation: 2, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 4 },
+
+  titleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
+  title: { fontSize: 18, fontWeight: 'bold', color: '#333', flex: 1, marginRight: 10 },
+  estadoBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 },
+  estadoText: { fontSize: 11, color: '#fff', fontWeight: '600', textTransform: 'capitalize' },
+
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 12 },
-  label: { fontSize: 14, color: '#666' },
-  value: { fontSize: 15, fontWeight: '600', color: '#333' },
+  label: { fontSize: 14, color: '#666', marginRight: 12 },
+  value: { fontSize: 15, fontWeight: '600', color: '#333', flexShrink: 1, textAlign: 'right' },
+  valueWrap: { flex: 1 },
   divider: { height: 1, backgroundColor: '#f0f0f0' },
-  btnCancelar: { marginTop: 24, borderWidth: 1, borderColor: '#F44336', borderRadius: 10, padding: 14, alignItems: 'center' },
+
+  btnComoLlegar: { marginTop: 12, backgroundColor: '#E8F0FE', borderRadius: 10, padding: 12, alignItems: 'center' },
+  btnComoLlegarText: { color: '#1A73E8', fontSize: 15, fontWeight: '700' },
+
+  seccionLabel: { fontSize: 16, fontWeight: '700', color: '#333', marginBottom: 8 },
+  parrafo: { fontSize: 14, color: '#555', lineHeight: 22 },
+
+  acciones: { marginHorizontal: 20, marginTop: 20 },
+  btnCancelar: { borderWidth: 1, borderColor: '#F44336', borderRadius: 10, padding: 14, alignItems: 'center' },
   btnCancelarText: { color: '#F44336', fontSize: 15, fontWeight: '600' },
+  noCancelable: { textAlign: 'center', color: '#999', fontSize: 14, paddingVertical: 8 },
   btnVer: { marginTop: 12, backgroundColor: '#2196F3', borderRadius: 10, padding: 14, alignItems: 'center' },
   btnVerText: { color: '#fff', fontSize: 15, fontWeight: '600' },
+  btnVoucher: { marginTop: 12, backgroundColor: '#4CAF50', borderRadius: 10, padding: 14, alignItems: 'center' },
+  btnVoucherText: { color: '#fff', fontSize: 15, fontWeight: '600' },
 });

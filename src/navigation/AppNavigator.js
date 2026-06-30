@@ -20,13 +20,16 @@ import ReservaDetailScreen from '../screens/reservas/ReservaDetailScreen';
 import FavoritosScreen from '../screens/favoritos/FavoritosScreen';
 import HistorialScreen from '../screens/historial/HistorialScreen';
 import NoticiasScreen from '../screens/noticias/NoticiasScreen';
+import NoticiaDetailScreen from '../screens/noticias/NoticiaDetailScreen';
 import ProfileScreen from '../screens/profile/ProfileScreen';
+import VoucherScreen from '../screens/voucher/VoucherScreen';
+import ScanQRScreen from '../screens/voucher/ScanQRScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function TabIcon({ name }) {
-  const icons = { home: '🏠', search: '🔍', calendar: '📅', heart: '❤️', person: '👤' };
+  const icons = { home: '🏠', search: '🔍', calendar: '📅', heart: '❤️', news: '📰', person: '👤' };
   return <Text style={{ fontSize: 20 }}>{icons[name]}</Text>;
 }
 
@@ -79,6 +82,15 @@ function MainTabs() {
         }}
       />
       <Tab.Screen
+        name="Noticias"
+        component={NoticiasScreen}
+        options={{
+          tabBarLabel: 'Noticias',
+          tabBarIcon: () => <TabIcon name="news" />,
+          title: 'Noticias',
+        }}
+      />
+      <Tab.Screen
         name="Perfil"
         component={ProfileScreen}
         options={{
@@ -110,7 +122,9 @@ function MainStack() {
       <Stack.Screen name="ReservaDetail" component={ReservaDetailScreen} options={{ headerShown: true, title: 'Detalle de Reserva' }} />
       <Stack.Screen name="Review" component={ReviewScreen} options={{ headerShown: true, title: 'Reseña' }} />
       <Stack.Screen name="Historial" component={HistorialScreen} options={{ headerShown: true, title: 'Historial' }} />
-      <Stack.Screen name="Noticias" component={NoticiasScreen} options={{ headerShown: true, title: 'Noticias' }} />
+      <Stack.Screen name="NoticiaDetail" component={NoticiaDetailScreen} options={{ headerShown: true, title: 'Noticia' }} />
+      <Stack.Screen name="Voucher" component={VoucherScreen} options={{ headerShown: true, title: 'Voucher' }} />
+      <Stack.Screen name="ScanQR" component={ScanQRScreen} options={{ headerShown: true, title: 'Check-in QR' }} />
     </Stack.Navigator>
   );
 }
