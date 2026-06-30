@@ -161,6 +161,26 @@ export default function ReservaDetailScreen({ route, navigation }) {
           </Text>
         )}
 
+        {estado === 'confirmada' && (
+          <TouchableOpacity
+            style={styles.btnVoucher}
+            onPress={() =>
+              navigation.navigate('Voucher', {
+                reservaId,
+                actividadId,
+                nombre: nombre || actividad?.nombre,
+                fecha,
+                horario,
+                cantidadParticipantes,
+                puntoEncuentro: actividad?.punto_encuentro,
+                guia: actividad?.guia,
+              })
+            }
+          >
+            <Text style={styles.btnVoucherText}>Ver voucher</Text>
+          </TouchableOpacity>
+        )}
+
         {actividadId && (
           <TouchableOpacity
             style={styles.btnVer}
@@ -198,4 +218,6 @@ const styles = StyleSheet.create({
   noCancelable: { textAlign: 'center', color: '#999', fontSize: 14, paddingVertical: 8 },
   btnVer: { marginTop: 12, backgroundColor: '#2196F3', borderRadius: 10, padding: 14, alignItems: 'center' },
   btnVerText: { color: '#fff', fontSize: 15, fontWeight: '600' },
+  btnVoucher: { marginTop: 12, backgroundColor: '#4CAF50', borderRadius: 10, padding: 14, alignItems: 'center' },
+  btnVoucherText: { color: '#fff', fontSize: 15, fontWeight: '600' },
 });

@@ -21,6 +21,8 @@ import FavoritosScreen from '../screens/favoritos/FavoritosScreen';
 import HistorialScreen from '../screens/historial/HistorialScreen';
 import NoticiasScreen from '../screens/noticias/NoticiasScreen';
 import ProfileScreen from '../screens/profile/ProfileScreen';
+import VoucherScreen from '../screens/voucher/VoucherScreen';
+import ScanQRScreen from '../screens/voucher/ScanQRScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -111,6 +113,8 @@ function MainStack() {
       <Stack.Screen name="Review" component={ReviewScreen} options={{ headerShown: true, title: 'Reseña' }} />
       <Stack.Screen name="Historial" component={HistorialScreen} options={{ headerShown: true, title: 'Historial' }} />
       <Stack.Screen name="Noticias" component={NoticiasScreen} options={{ headerShown: true, title: 'Noticias' }} />
+      <Stack.Screen name="Voucher" component={VoucherScreen} options={{ headerShown: true, title: 'Voucher' }} />
+      <Stack.Screen name="ScanQR" component={ScanQRScreen} options={{ headerShown: true, title: 'Check-in QR' }} />
     </Stack.Navigator>
   );
 }
