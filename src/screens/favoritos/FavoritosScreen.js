@@ -3,6 +3,7 @@ import {
   View, Text, FlatList, TouchableOpacity, Image,
   StyleSheet, Alert, ActivityIndicator,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { getMisFavoritos, removeFavorito } from '../../api/apiService';
 
 export default function FavoritosScreen({ navigation }) {
@@ -62,7 +63,7 @@ export default function FavoritosScreen({ navigation }) {
               <Text style={styles.itemPrecio}>${item.precio}</Text>
             </View>
             <TouchableOpacity onPress={() => handleRemove(item)} style={styles.removeBtn}>
-              <Text style={{ fontSize: 24 }}>❤️</Text>
+              <Ionicons name="heart" size={24} color="#F44336" />
             </TouchableOpacity>
           </TouchableOpacity>
         )}

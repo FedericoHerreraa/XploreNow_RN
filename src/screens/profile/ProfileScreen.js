@@ -3,6 +3,7 @@ import {
   View, Text, TextInput, TouchableOpacity, ScrollView,
   StyleSheet, Alert, ActivityIndicator, Image,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getProfile, updateProfile, getMisReservas } from '../../api/apiService';
@@ -153,7 +154,9 @@ export default function ProfileScreen({ navigation }) {
                 <Text style={styles.avatarText}>{(profile?.name?.[0] || 'U').toUpperCase()}</Text>
               </View>
           }
-          <View style={styles.cameraIcon}><Text style={{ fontSize: 12 }}>📷</Text></View>
+          <View style={styles.cameraIcon}>
+            <Ionicons name="camera" size={12} color="#2196F3" />
+          </View>
         </TouchableOpacity>
         {!editMode && (
           <>

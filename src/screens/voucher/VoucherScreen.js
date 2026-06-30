@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function VoucherScreen({ route, navigation }) {
   const {
@@ -16,7 +17,10 @@ export default function VoucherScreen({ route, navigation }) {
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ padding: 20 }}>
       <View style={styles.voucher}>
-        <Text style={styles.header}>🎫 Voucher Digital</Text>
+        <View style={styles.headerRow}>
+          <Ionicons name="ticket-outline" size={18} color="#2196F3" style={{ marginRight: 6 }} />
+          <Text style={styles.header}>Voucher Digital</Text>
+        </View>
         <Text style={styles.nombre}>{nombre || 'Actividad'}</Text>
 
         <View style={styles.divider} />
@@ -60,7 +64,8 @@ export default function VoucherScreen({ route, navigation }) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8F9FA' },
   voucher: { backgroundColor: '#fff', borderRadius: 16, padding: 24, elevation: 3, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 6, borderWidth: 2, borderColor: '#2196F3', borderStyle: 'dashed' },
-  header: { fontSize: 14, color: '#2196F3', fontWeight: '700', textAlign: 'center', marginBottom: 8 },
+  headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 8 },
+  header: { fontSize: 14, color: '#2196F3', fontWeight: '700' },
   nombre: { fontSize: 20, fontWeight: 'bold', color: '#333', textAlign: 'center', marginBottom: 8 },
   divider: { height: 1, backgroundColor: '#eee', marginVertical: 16 },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 },

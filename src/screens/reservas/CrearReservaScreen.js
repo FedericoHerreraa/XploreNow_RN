@@ -3,6 +3,7 @@ import {
   View, Text, TextInput, TouchableOpacity,
   StyleSheet, Alert, ActivityIndicator, ScrollView,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { getActividadById, crearReserva } from '../../api/apiService';
 
@@ -132,7 +133,7 @@ export default function CrearReservaScreen({ route, navigation }) {
   if (!actividadId) {
     return (
       <View style={styles.centered}>
-        <Text style={styles.emptyEmoji}>🧭</Text>
+        <Ionicons name="compass-outline" size={48} color="#2196F3" style={{ marginBottom: 12 }} />
         <Text style={styles.emptyTitle}>Elegí una actividad</Text>
         <Text style={styles.emptyText}>
           Para reservar, primero seleccioná una actividad desde el catálogo.
@@ -153,7 +154,10 @@ export default function CrearReservaScreen({ route, navigation }) {
       {actividad && (
         <View style={styles.resumen}>
           <Text style={styles.resumenNombre}>{actividad.nombre}</Text>
-          <Text style={styles.resumenDestino}>📍 {actividad.destino}</Text>
+          <View style={styles.resumenDestinoRow}>
+            <Ionicons name="location-outline" size={13} color="#666" style={{ marginRight: 4 }} />
+            <Text style={styles.resumenDestino}>{actividad.destino}</Text>
+          </View>
           <View style={styles.resumenRow}>
             <Text style={styles.resumenPrecio}>
               {actividad.precio === 0 ? 'Gratis' : `$${actividad.precio}`}
@@ -220,7 +224,7 @@ export default function CrearReservaScreen({ route, navigation }) {
             onPress={decParticipantes}
             disabled={participantes <= 1}
           >
-            <Text style={styles.stepBtnText}>−</Text>
+            <Ionicons name="remove" size={22} color="#2196F3" />
           </TouchableOpacity>
           <Text style={styles.stepValue}>{participantes}</Text>
           <TouchableOpacity
@@ -231,7 +235,7 @@ export default function CrearReservaScreen({ route, navigation }) {
             onPress={incParticipantes}
             disabled={cupos != null && participantes >= cupos}
           >
-            <Text style={styles.stepBtnText}>+</Text>
+            <Ionicons name="add" size={22} color="#2196F3" />
           </TouchableOpacity>
         </View>
 
@@ -268,7 +272,8 @@ const styles = StyleSheet.create({
 
   resumen: { backgroundColor: '#fff', padding: 20, borderBottomWidth: 1, borderBottomColor: '#eee' },
   resumenNombre: { fontSize: 18, fontWeight: 'bold', color: '#333', marginBottom: 4 },
-  resumenDestino: { fontSize: 13, color: '#666', marginBottom: 10 },
+  resumenDestinoRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
+  resumenDestino: { fontSize: 13, color: '#666' },
   resumenRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   resumenPrecio: { fontSize: 18, fontWeight: 'bold', color: '#2196F3' },
   cuposPill: { fontSize: 12, color: '#2E7D32', backgroundColor: '#E8F5E9', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12, overflow: 'hidden' },
@@ -289,7 +294,6 @@ const styles = StyleSheet.create({
   stepper: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
   stepBtn: { width: 44, height: 44, borderRadius: 8, backgroundColor: '#E3F2FD', justifyContent: 'center', alignItems: 'center' },
   stepBtnDisabled: { backgroundColor: '#f0f0f0' },
-  stepBtnText: { fontSize: 22, color: '#2196F3', fontWeight: '700' },
   stepValue: { fontSize: 18, fontWeight: '700', color: '#333', minWidth: 56, textAlign: 'center' },
 
   errorMsg: { color: '#C62828', fontSize: 13, marginTop: 4, marginBottom: 4 },
@@ -298,7 +302,6 @@ const styles = StyleSheet.create({
   btnDisabled: { backgroundColor: '#B0BEC5' },
   btnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
 
-  emptyEmoji: { fontSize: 48, marginBottom: 12 },
   emptyTitle: { fontSize: 18, fontWeight: '700', color: '#333', marginBottom: 6 },
   emptyText: { fontSize: 14, color: '#777', textAlign: 'center', marginBottom: 20, lineHeight: 20 },
 });

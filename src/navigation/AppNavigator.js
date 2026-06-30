@@ -3,7 +3,7 @@ import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import { useAuth } from '../context/AuthContext';
 
@@ -28,9 +28,18 @@ import ScanQRScreen from '../screens/voucher/ScanQRScreen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-function TabIcon({ name }) {
-  const icons = { home: '🏠', search: '🔍', calendar: '📅', heart: '❤️', news: '📰', person: '👤' };
-  return <Text style={{ fontSize: 20 }}>{icons[name]}</Text>;
+const TAB_ICONS = {
+  home: { active: 'home', inactive: 'home-outline' },
+  search: { active: 'search', inactive: 'search-outline' },
+  calendar: { active: 'calendar', inactive: 'calendar-outline' },
+  heart: { active: 'heart', inactive: 'heart-outline' },
+  news: { active: 'newspaper', inactive: 'newspaper-outline' },
+  person: { active: 'person', inactive: 'person-outline' },
+};
+
+function TabIcon({ name, focused, color, size }) {
+  const iconName = focused ? TAB_ICONS[name].active : TAB_ICONS[name].inactive;
+  return <Ionicons name={iconName} size={size} color={color} />;
 }
 
 function MainTabs() {
@@ -50,7 +59,7 @@ function MainTabs() {
         component={HomeScreen}
         options={{
           tabBarLabel: 'Inicio',
-          tabBarIcon: () => <TabIcon name="home" />,
+          tabBarIcon: ({ focused, color, size }) => <TabIcon name="home" focused={focused} color={color} size={size} />,
           headerShown: false,
         }}
       />
@@ -59,7 +68,7 @@ function MainTabs() {
         component={ActividadListScreen}
         options={{
           tabBarLabel: 'Actividades',
-          tabBarIcon: () => <TabIcon name="search" />,
+          tabBarIcon: ({ focused, color, size }) => <TabIcon name="search" focused={focused} color={color} size={size} />,
           title: 'Actividades',
         }}
       />
@@ -68,7 +77,7 @@ function MainTabs() {
         component={MisReservasScreen}
         options={{
           tabBarLabel: 'Reservas',
-          tabBarIcon: () => <TabIcon name="calendar" />,
+          tabBarIcon: ({ focused, color, size }) => <TabIcon name="calendar" focused={focused} color={color} size={size} />,
           title: 'Mis Reservas',
         }}
       />
@@ -77,7 +86,7 @@ function MainTabs() {
         component={FavoritosScreen}
         options={{
           tabBarLabel: 'Favoritos',
-          tabBarIcon: () => <TabIcon name="heart" />,
+          tabBarIcon: ({ focused, color, size }) => <TabIcon name="heart" focused={focused} color={color} size={size} />,
           title: 'Mis Favoritos',
         }}
       />
@@ -86,7 +95,7 @@ function MainTabs() {
         component={NoticiasScreen}
         options={{
           tabBarLabel: 'Noticias',
-          tabBarIcon: () => <TabIcon name="news" />,
+          tabBarIcon: ({ focused, color, size }) => <TabIcon name="news" focused={focused} color={color} size={size} />,
           title: 'Noticias',
         }}
       />
@@ -95,7 +104,7 @@ function MainTabs() {
         component={ProfileScreen}
         options={{
           tabBarLabel: 'Perfil',
-          tabBarIcon: () => <TabIcon name="person" />,
+          tabBarIcon: ({ focused, color, size }) => <TabIcon name="person" focused={focused} color={color} size={size} />,
           title: 'Mi Perfil',
         }}
       />

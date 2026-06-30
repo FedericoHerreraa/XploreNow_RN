@@ -3,9 +3,17 @@ import {
   View, Text, TextInput, TouchableOpacity, FlatList,
   StyleSheet, Alert, ActivityIndicator, Image, ScrollView,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { getActividades, addFavorito, removeFavorito, checkFavorito } from '../../api/apiService';
 
-const CATEGORIAS = ['', 'aventura', 'cultura', 'gastronomia', 'naturaleza', 'relax'];
+const CATEGORIAS = [
+  '',
+  'free tour',
+  'excursión',
+  'experiencia gastronómica',
+  'aventura',
+  'visita guiada',
+];
 
 function ActividadItem({ item, onPress, onToggleFav }) {
   return (
@@ -22,7 +30,11 @@ function ActividadItem({ item, onPress, onToggleFav }) {
         <Text style={styles.itemPrecio}>{item.precio === 0 ? 'Gratis' : `$${item.precio}`}</Text>
       </View>
       <TouchableOpacity onPress={() => onToggleFav(item)} style={styles.favBtn}>
-        <Text style={{ fontSize: 22 }}>{item.esFavorito ? '❤️' : '🤍'}</Text>
+        <Ionicons
+          name={item.esFavorito ? 'heart' : 'heart-outline'}
+          size={22}
+          color={item.esFavorito ? '#F44336' : '#ccc'}
+        />
       </TouchableOpacity>
     </TouchableOpacity>
   );

@@ -3,6 +3,7 @@ import {
   View, Text, FlatList, TouchableOpacity, ScrollView,
   StyleSheet, Alert, ActivityIndicator, RefreshControl,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { getMisReservas } from '../../api/apiService';
 
@@ -32,11 +33,20 @@ function ReservaItem({ item, onPress }) {
           <Text style={styles.estadoText}>{estado}</Text>
         </View>
       </View>
-      <Text style={styles.itemLinea}>📅 {item.fecha || '—'}</Text>
-      <Text style={styles.itemLinea}>🕐 {item.horario || '—'}</Text>
-      <Text style={styles.itemLinea}>
-        👥 {item.cantidadParticipantes} participante{item.cantidadParticipantes !== 1 ? 's' : ''}
-      </Text>
+      <View style={styles.itemLinea}>
+        <Ionicons name="calendar-outline" size={13} color="#666" style={styles.itemIcon} />
+        <Text style={styles.itemLineaText}>{item.fecha || '—'}</Text>
+      </View>
+      <View style={styles.itemLinea}>
+        <Ionicons name="time-outline" size={13} color="#666" style={styles.itemIcon} />
+        <Text style={styles.itemLineaText}>{item.horario || '—'}</Text>
+      </View>
+      <View style={styles.itemLinea}>
+        <Ionicons name="people-outline" size={13} color="#666" style={styles.itemIcon} />
+        <Text style={styles.itemLineaText}>
+          {item.cantidadParticipantes} participante{item.cantidadParticipantes !== 1 ? 's' : ''}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 }
@@ -170,7 +180,9 @@ const styles = StyleSheet.create({
   itemNombre: { fontSize: 15, fontWeight: '600', color: '#333', flex: 1, marginRight: 8 },
   estadoBadge: { paddingHorizontal: 10, paddingVertical: 3, borderRadius: 12 },
   estadoText: { fontSize: 11, color: '#fff', fontWeight: '600', textTransform: 'capitalize' },
-  itemLinea: { fontSize: 13, color: '#666', marginBottom: 3 },
+  itemLinea: { flexDirection: 'row', alignItems: 'center', marginBottom: 3 },
+  itemIcon: { marginRight: 6 },
+  itemLineaText: { fontSize: 13, color: '#666' },
 
   emptyText: { textAlign: 'center', color: '#999', marginTop: 48, fontSize: 15 },
 });
