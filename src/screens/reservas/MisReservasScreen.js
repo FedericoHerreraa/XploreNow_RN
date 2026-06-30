@@ -70,15 +70,23 @@ export default function MisReservasScreen({ navigation }) {
         ListEmptyComponent={<Text style={styles.emptyText}>No tenés reservas aún</Text>}
         contentContainerStyle={{ paddingVertical: 12 }}
         ListHeaderComponent={
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>Mis Reservas</Text>
+          <>
+            <View style={styles.header}>
+              <Text style={styles.headerTitle}>Mis Reservas</Text>
+              <TouchableOpacity
+                style={styles.btnNueva}
+                onPress={() => navigation.navigate('CrearReserva', {})}
+              >
+                <Text style={styles.btnNuevaText}>+ Nueva</Text>
+              </TouchableOpacity>
+            </View>
             <TouchableOpacity
-              style={styles.btnNueva}
-              onPress={() => navigation.navigate('CrearReserva', {})}
+              style={styles.btnHistorial}
+              onPress={() => navigation.navigate('Historial')}
             >
-              <Text style={styles.btnNuevaText}>+ Nueva</Text>
+              <Text style={styles.btnHistorialText}>Ver historial y calificar</Text>
             </TouchableOpacity>
-          </View>
+          </>
         }
       />
     </View>
@@ -92,6 +100,8 @@ const styles = StyleSheet.create({
   headerTitle: { fontSize: 20, fontWeight: 'bold', color: '#333' },
   btnNueva: { backgroundColor: '#2196F3', borderRadius: 8, paddingHorizontal: 16, paddingVertical: 8 },
   btnNuevaText: { color: '#fff', fontWeight: '600' },
+  btnHistorial: { marginHorizontal: 16, marginBottom: 12, borderWidth: 1, borderColor: '#2196F3', borderRadius: 8, padding: 12, alignItems: 'center' },
+  btnHistorialText: { color: '#2196F3', fontWeight: '600', fontSize: 15 },
   item: { backgroundColor: '#fff', marginHorizontal: 16, marginBottom: 10, borderRadius: 12, padding: 16, elevation: 1, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 3 },
   itemHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
   itemNombre: { fontSize: 15, fontWeight: '600', color: '#333', flex: 1, marginRight: 8 },

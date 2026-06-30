@@ -6,8 +6,33 @@ import {
 import { postReview, getReview } from '../../api/apiService';
 import { useAuth } from '../../context/AuthContext';
 
+const CALIFICACION_HORAS = 48;
+
+const getActividadDate = (fecha, horario) => {
+  if (!fecha) return null;
+
+  const fechaBase = String(fecha).split('T')[0];
+  const horaBase = horario || '00:00';
+  const fechaActividad = new Date(`${fechaBase}T${horaBase}:00`);
+
+  if (Number.isNaN(fechaActividad.getTime())) {
+    const fallback = new Date(fecha);
+    return Number.isNaN(fallback.getTime()) ? null : fallback;
+  }
+
+  return fechaActividad;
+};
+
+const isCalificable = (fecha, horario) => {
+  const fechaActividad = getActividadDate(fecha, horario);
+  if (!fechaActividad) return false;
+
+  const limite = new Date(fechaActividad.getTime() + CALIFICACION_HORAS * 60 * 60 * 1000);
+  return new Date() <= limite;
+};
+
 export default function ReviewScreen({ route }) {
-  const { actividadId } = route.params;
+  const { actividadId, fecha, horario } = route.params;
   const { user } = useAuth();
   const [review, setReview] = useState(null);
   const [calificacionActividad, setCalificacionActividad] = useState(0);
@@ -34,6 +59,10 @@ export default function ReviewScreen({ route }) {
   }, [actividadId]);
 
   const handleEnviar = async () => {
+    if (fecha && !isCalificable(fecha, horario)) {
+      Alert.alert('Error', 'El plazo para calificar esta actividad venció');
+      return;
+    }
     if (calificacionActividad === 0 || calificacionGuia === 0) {
       Alert.alert('Error', 'Calificá tanto la actividad como el guía');
       return;
@@ -82,6 +111,17 @@ export default function ReviewScreen({ route }) {
     );
   }
 
+  if (fecha && !isCalificable(fecha, horario)) {
+    return (
+      <ScrollView style={styles.container}>
+        <View style={styles.card}>
+          <Text style={styles.title}>Plazo vencido</Text>
+          <Text style={styles.noComentario}>El plazo para calificar esta actividad venció</Text>
+        </View>
+      </ScrollView>
+    );
+  }
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.card}>
@@ -115,8 +155,9 @@ export default function ReviewScreen({ route }) {
           numberOfLines={5}
           placeholderTextColor="#999"
           textAlignVertical="top"
-          maxLength={2000}
+          maxLength={300}
         />
+        <Text style={styles.counterText}>{comentario.length}/300</Text>
 
         {submitting ? (
           <ActivityIndicator color="#2196F3" style={{ marginTop: 20 }} />
@@ -139,7 +180,8 @@ const styles = StyleSheet.create({
   starsRow: { flexDirection: 'row', marginBottom: 16 },
   starBtn: { fontSize: 34, marginRight: 4 },
   starStatic: { fontSize: 26, marginRight: 4 },
-  textarea: { borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 12, fontSize: 14, color: '#333', minHeight: 120, marginBottom: 16 },
+  textarea: { borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 12, fontSize: 14, color: '#333', minHeight: 120, marginBottom: 6 },
+  counterText: { color: '#999', fontSize: 12, textAlign: 'right', marginBottom: 16 },
   btn: { backgroundColor: '#2196F3', borderRadius: 10, padding: 16, alignItems: 'center' },
   btnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
   comentarioText: { fontSize: 15, color: '#555', marginTop: 12, lineHeight: 22 },

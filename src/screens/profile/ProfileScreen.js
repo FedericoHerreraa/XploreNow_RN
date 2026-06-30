@@ -16,7 +16,7 @@ const ESTADO_COLORS = {
   finalizada: { bg: '#F3E5F5', text: '#6A1B9A' },
 };
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }) {
   const { logout } = useAuth();
   const [profile, setProfile] = useState(null);
   const [editMode, setEditMode] = useState(false);
@@ -178,6 +178,10 @@ export default function ProfileScreen() {
           <Text style={styles.statLabel}>Total</Text>
         </View>
       </View>
+
+      <TouchableOpacity style={styles.btnHistorial} onPress={() => navigation.navigate('Historial')}>
+        <Text style={styles.btnHistorialText}>Ver historial</Text>
+      </TouchableOpacity>
 
       {/* Últimas reservas */}
       {reservas.length > 0 && (
@@ -356,6 +360,8 @@ const styles = StyleSheet.create({
   row:         { flexDirection: 'row', marginTop: 8 },
   btn:         { backgroundColor: '#2196F3', borderRadius: 10, padding: 14, alignItems: 'center', marginTop: 16 },
   btnText:     { color: '#fff', fontSize: 15, fontWeight: '600' },
+  btnHistorial: { marginHorizontal: 16, marginBottom: 12, borderWidth: 1, borderColor: '#2196F3', borderRadius: 10, padding: 14, alignItems: 'center' },
+  btnHistorialText: { color: '#2196F3', fontSize: 15, fontWeight: '600' },
   btnLogout:   { marginHorizontal: 16, marginTop: 4, borderWidth: 1, borderColor: '#F44336', borderRadius: 10, padding: 14, alignItems: 'center' },
   btnLogoutText: { color: '#F44336', fontSize: 15, fontWeight: '600' },
 });
