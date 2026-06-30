@@ -1,29 +1,42 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
-  View, Text, FlatList, TouchableOpacity,
-  StyleSheet, Alert, ActivityIndicator,
+  View, Text, FlatList, TouchableOpacity, ScrollView,
+  StyleSheet, Alert, ActivityIndicator, RefreshControl,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { getMisReservas } from '../../api/apiService';
 
 const ESTADO_COLORS = {
   pendiente: '#FF9800',
   confirmada: '#4CAF50',
+  finalizada: '#607D8B',
   cancelada: '#F44336',
 };
 
+const FILTROS = [
+  { key: 'todas', label: 'Todas' },
+  { key: 'confirmada', label: 'Confirmadas' },
+  { key: 'finalizada', label: 'Finalizadas' },
+  { key: 'cancelada', label: 'Canceladas' },
+];
+
 function ReservaItem({ item, onPress }) {
-  const estado = item.estado || 'pendiente';
+  const estado = (item.estado || 'pendiente').toLowerCase();
   return (
     <TouchableOpacity style={styles.item} onPress={() => onPress(item)}>
       <View style={styles.itemHeader}>
-        <Text style={styles.itemNombre} numberOfLines={1}>{item.actividad?.nombre || 'Actividad'}</Text>
+        <Text style={styles.itemNombre} numberOfLines={1}>
+          {item.actividad?.nombre || item.actividadNombre || 'Actividad'}
+        </Text>
         <View style={[styles.estadoBadge, { backgroundColor: ESTADO_COLORS[estado] || '#999' }]}>
           <Text style={styles.estadoText}>{estado}</Text>
         </View>
       </View>
-      <Text style={styles.itemFecha}>📅 {item.fecha}</Text>
-      <Text style={styles.itemHorario}>🕐 {item.horario}</Text>
-      <Text style={styles.itemPersonas}>👥 {item.cantidadParticipantes} participante{item.cantidadParticipantes !== 1 ? 's' : ''}</Text>
+      <Text style={styles.itemLinea}>📅 {item.fecha || '—'}</Text>
+      <Text style={styles.itemLinea}>🕐 {item.horario || '—'}</Text>
+      <Text style={styles.itemLinea}>
+        👥 {item.cantidadParticipantes} participante{item.cantidadParticipantes !== 1 ? 's' : ''}
+      </Text>
     </TouchableOpacity>
   );
 }
@@ -31,62 +44,108 @@ function ReservaItem({ item, onPress }) {
 export default function MisReservasScreen({ navigation }) {
   const [reservas, setReservas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [filtro, setFiltro] = useState('todas');
 
-  useEffect(() => {
-    load();
+  const fetchReservas = useCallback(async () => {
+    const res = await getMisReservas();
+    setReservas(res.data?.reservas || res.data || []);
   }, []);
 
-  const load = async () => {
-    setLoading(true);
+  useFocusEffect(
+    useCallback(() => {
+      let activo = true;
+      (async () => {
+        try {
+          await fetchReservas();
+        } catch {
+          if (activo) Alert.alert('Error', 'No se pudieron cargar las reservas');
+        } finally {
+          if (activo) setLoading(false);
+        }
+      })();
+      return () => {
+        activo = false;
+      };
+    }, [fetchReservas])
+  );
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
     try {
-      const res = await getMisReservas();
-      setReservas(res.data?.reservas || res.data || []);
+      await fetchReservas();
     } catch {
       Alert.alert('Error', 'No se pudieron cargar las reservas');
     } finally {
-      setLoading(false);
+      setRefreshing(false);
     }
-  };
+  }, [fetchReservas]);
 
   const handlePress = (item) => {
     navigation.navigate('ReservaDetail', {
       reservaId: item._id || item.id,
       actividadId: item.actividad?._id || item.actividad?.id || item.actividadId,
+      nombre: item.actividad?.nombre || item.actividadNombre,
       fecha: item.fecha,
       horario: item.horario,
+      cantidadParticipantes: item.cantidadParticipantes,
+      estado: (item.estado || 'confirmada').toLowerCase(),
     });
   };
 
+  const filtradas =
+    filtro === 'todas'
+      ? reservas
+      : reservas.filter((r) => (r.estado || '').toLowerCase() === filtro);
+
   if (loading) {
-    return <View style={styles.centered}><ActivityIndicator size="large" color="#2196F3" /></View>;
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#2196F3" />
+      </View>
+    );
   }
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={reservas}
+        data={filtradas}
         keyExtractor={(item) => String(item._id || item.id)}
         renderItem={({ item }) => <ReservaItem item={item} onPress={handlePress} />}
-        ListEmptyComponent={<Text style={styles.emptyText}>No tenés reservas aún</Text>}
-        contentContainerStyle={{ paddingVertical: 12 }}
+        contentContainerStyle={{ paddingBottom: 16 }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#2196F3']} />
+        }
         ListHeaderComponent={
-          <>
-            <View style={styles.header}>
-              <Text style={styles.headerTitle}>Mis Reservas</Text>
-              <TouchableOpacity
-                style={styles.btnNueva}
-                onPress={() => navigation.navigate('CrearReserva', {})}
-              >
-                <Text style={styles.btnNuevaText}>+ Nueva</Text>
-              </TouchableOpacity>
-            </View>
+          <View style={styles.header}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtros}>
+              {FILTROS.map((f) => {
+                const sel = filtro === f.key;
+                return (
+                  <TouchableOpacity
+                    key={f.key}
+                    style={[styles.filtroChip, sel && styles.filtroChipSel]}
+                    onPress={() => setFiltro(f.key)}
+                  >
+                    <Text style={[styles.filtroText, sel && styles.filtroTextSel]}>{f.label}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
             <TouchableOpacity
-              style={styles.btnHistorial}
-              onPress={() => navigation.navigate('Historial')}
+              style={styles.btnNueva}
+              onPress={() => navigation.navigate('Actividades')}
             >
-              <Text style={styles.btnHistorialText}>Ver historial y calificar</Text>
+              <Text style={styles.btnNuevaText}>+ Nueva</Text>
             </TouchableOpacity>
-          </>
+          </View>
+        }
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>
+            {filtro === 'todas'
+              ? 'No tenés reservas aún'
+              : `No tenés reservas ${FILTROS.find((f) => f.key === filtro)?.label.toLowerCase()}`}
+          </Text>
         }
       />
     </View>
@@ -96,19 +155,22 @@ export default function MisReservasScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#F8F9FA' },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 12 },
-  headerTitle: { fontSize: 20, fontWeight: 'bold', color: '#333' },
-  btnNueva: { backgroundColor: '#2196F3', borderRadius: 8, paddingHorizontal: 16, paddingVertical: 8 },
+
+  header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 12 },
+  filtros: { flexDirection: 'row', flex: 1 },
+  filtroChip: { borderWidth: 1, borderColor: '#ddd', borderRadius: 18, paddingHorizontal: 14, paddingVertical: 7, marginRight: 8, backgroundColor: '#fff' },
+  filtroChipSel: { backgroundColor: '#2196F3', borderColor: '#2196F3' },
+  filtroText: { fontSize: 13, color: '#555' },
+  filtroTextSel: { color: '#fff', fontWeight: '600' },
+  btnNueva: { backgroundColor: '#2196F3', borderRadius: 8, paddingHorizontal: 14, paddingVertical: 8, marginLeft: 4 },
   btnNuevaText: { color: '#fff', fontWeight: '600' },
-  btnHistorial: { marginHorizontal: 16, marginBottom: 12, borderWidth: 1, borderColor: '#2196F3', borderRadius: 8, padding: 12, alignItems: 'center' },
-  btnHistorialText: { color: '#2196F3', fontWeight: '600', fontSize: 15 },
+
   item: { backgroundColor: '#fff', marginHorizontal: 16, marginBottom: 10, borderRadius: 12, padding: 16, elevation: 1, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 3 },
   itemHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
   itemNombre: { fontSize: 15, fontWeight: '600', color: '#333', flex: 1, marginRight: 8 },
   estadoBadge: { paddingHorizontal: 10, paddingVertical: 3, borderRadius: 12 },
   estadoText: { fontSize: 11, color: '#fff', fontWeight: '600', textTransform: 'capitalize' },
-  itemFecha: { fontSize: 13, color: '#666', marginBottom: 3 },
-  itemHorario: { fontSize: 13, color: '#666', marginBottom: 3 },
-  itemPersonas: { fontSize: 13, color: '#666' },
+  itemLinea: { fontSize: 13, color: '#666', marginBottom: 3 },
+
   emptyText: { textAlign: 'center', color: '#999', marginTop: 48, fontSize: 15 },
 });

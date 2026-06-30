@@ -47,8 +47,6 @@ export default function ReservaDetailScreen({ route, navigation }) {
   const politica = actividad?.politica_cancelacion;
   const puedeCancelar = estado !== 'cancelada' && estado !== 'finalizada';
 
-  // Punto 10: abre Google Maps (o la app de mapas por defecto) con la dirección
-  // del punto de encuentro precargada en modo navegación.
   const abrirComoLlegar = async () => {
     const direccion = actividad?.punto_encuentro;
     if (!direccion) return;
