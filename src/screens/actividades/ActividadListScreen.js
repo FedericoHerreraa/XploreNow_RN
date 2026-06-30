@@ -19,7 +19,7 @@ function ActividadItem({ item, onPress, onToggleFav }) {
         <Text style={styles.itemNombre} numberOfLines={1}>{item.nombre}</Text>
         <Text style={styles.itemDestino}>{item.destino}</Text>
         <Text style={styles.itemCategoria}>{item.categoria}</Text>
-        <Text style={styles.itemPrecio}>${item.precio}</Text>
+        <Text style={styles.itemPrecio}>{item.precio === 0 ? 'Gratis' : `$${item.precio}`}</Text>
       </View>
       <TouchableOpacity onPress={() => onToggleFav(item)} style={styles.favBtn}>
         <Text style={{ fontSize: 22 }}>{item.esFavorito ? '❤️' : '🤍'}</Text>
@@ -49,7 +49,7 @@ export default function ActividadListScreen({ navigation }) {
   const fetchDestacadas = async () => {
     try {
       const res = await getActividades({ destacadas: true, limit: 10 });
-      setDestacadas(res.data?.actividades || res.data || []);
+      setDestacadas(res.data?.destacadas || []);
     } catch {
       // silencioso
     }
@@ -66,9 +66,10 @@ export default function ActividadListScreen({ navigation }) {
       if (precioMax) params.precio_max = precioMax;
       if (fecha) params.fecha = fecha;
       const res = await getActividades(params);
-      const items = res.data?.actividades || res.data || [];
+      const items = res.data?.results || [];
+      const totalPages = res.data?.total_pages || 1;
       setActividades(prev => reset ? items : [...prev, ...items]);
-      setHasMore(items.length === 10);
+      setHasMore(pageNum < totalPages);
       setPage(pageNum);
     } catch (e) {
       Alert.alert('Error', 'No se pudieron cargar las actividades');
