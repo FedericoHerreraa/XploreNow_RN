@@ -86,6 +86,7 @@ export default function CrearReservaScreen({ route, navigation }) {
     }
 
     setSubmitting(true);
+    let cuposActuales = cupos;
     try {
       try {
         const fresh = await getActividadById(actividadId);
@@ -111,7 +112,7 @@ export default function CrearReservaScreen({ route, navigation }) {
       });
 
       Alert.alert('Reserva confirmada', 'Tu reserva se creó correctamente.', [
-        { text: 'OK', onPress: () => navigation.navigate('Reservas') },
+        { text: 'OK', onPress: () => navigation.navigate('Home', { screen: 'Reservas' }) },
       ]);
     } catch (e) {
       Alert.alert('Error', e?.response?.data?.error || 'No se pudo crear la reserva');
@@ -127,7 +128,7 @@ export default function CrearReservaScreen({ route, navigation }) {
       </View>
     );
   }
-  
+
   if (!actividadId) {
     return (
       <View style={styles.centered}>
