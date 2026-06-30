@@ -3,6 +3,7 @@ import {
   View, Text, TouchableOpacity, Linking,
   StyleSheet, Alert, ActivityIndicator, ScrollView,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { getActividadById, cancelarReserva } from '../../api/apiService';
 
 const ESTADO_COLORS = {
@@ -129,7 +130,10 @@ export default function ReservaDetailScreen({ route, navigation }) {
               <Text style={[styles.value, styles.valueWrap]}>{actividad.punto_encuentro}</Text>
             </View>
             <TouchableOpacity style={styles.btnComoLlegar} onPress={abrirComoLlegar}>
-              <Text style={styles.btnComoLlegarText}>🗺️  Cómo llegar</Text>
+              <View style={styles.btnComoLlegarContent}>
+                <Ionicons name="map-outline" size={16} color="#1A73E8" style={{ marginRight: 6 }} />
+                <Text style={styles.btnComoLlegarText}>Cómo llegar</Text>
+              </View>
             </TouchableOpacity>
           </>
         )}
@@ -224,6 +228,7 @@ const styles = StyleSheet.create({
   divider: { height: 1, backgroundColor: '#f0f0f0' },
 
   btnComoLlegar: { marginTop: 12, backgroundColor: '#E8F0FE', borderRadius: 10, padding: 12, alignItems: 'center' },
+  btnComoLlegarContent: { flexDirection: 'row', alignItems: 'center' },
   btnComoLlegarText: { color: '#1A73E8', fontSize: 15, fontWeight: '700' },
 
   seccionLabel: { fontSize: 16, fontWeight: '700', color: '#333', marginBottom: 8 },

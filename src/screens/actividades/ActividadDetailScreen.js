@@ -3,6 +3,7 @@ import {
   View, Text, ScrollView, TouchableOpacity, Image,
   StyleSheet, Alert, ActivityIndicator,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { getActividadById, checkFavorito, addFavorito, removeFavorito } from '../../api/apiService';
 
 export default function ActividadDetailScreen({ route, navigation }) {
@@ -66,12 +67,19 @@ export default function ActividadDetailScreen({ route, navigation }) {
         <View style={styles.titleRow}>
           <Text style={styles.nombre}>{actividad.nombre}</Text>
           <TouchableOpacity onPress={handleToggleFav}>
-            <Text style={{ fontSize: 28 }}>{esFavorito ? '❤️' : '🤍'}</Text>
+            <Ionicons
+              name={esFavorito ? 'heart' : 'heart-outline'}
+              size={28}
+              color={esFavorito ? '#F44336' : '#ccc'}
+            />
           </TouchableOpacity>
         </View>
 
         <View style={styles.metaRow}>
-          <Text style={styles.destino}>📍 {actividad.destino}</Text>
+          <View style={styles.iconRow}>
+            <Ionicons name="location-outline" size={14} color="#666" style={styles.iconGap} />
+            <Text style={styles.destino}>{actividad.destino}</Text>
+          </View>
           <Text style={styles.categoria}>{actividad.categoria}</Text>
         </View>
 
@@ -80,28 +88,31 @@ export default function ActividadDetailScreen({ route, navigation }) {
         </Text>
 
         {actividad.rating && (
-          <Text style={styles.rating}>⭐ {actividad.rating.toFixed(1)} promedio</Text>
+          <View style={styles.iconRow}>
+            <Ionicons name="star" size={14} color="#FF9800" style={styles.iconGap} />
+            <Text style={styles.rating}>{actividad.rating.toFixed(1)} promedio</Text>
+          </View>
         )}
 
         {/* Datos rápidos: duración, idioma, cupos */}
         <View style={styles.infoRapida}>
           {actividad.duracion && (
             <View style={styles.infoItem}>
-              <Text style={styles.infoIcon}>⏱️</Text>
+              <Ionicons name="time-outline" size={20} color="#2196F3" style={styles.infoIcon} />
               <Text style={styles.infoLabel}>Duración</Text>
               <Text style={styles.infoValor}>{actividad.duracion}</Text>
             </View>
           )}
           {actividad.idioma && (
             <View style={styles.infoItem}>
-              <Text style={styles.infoIcon}>🗣️</Text>
+              <Ionicons name="chatbubble-outline" size={20} color="#2196F3" style={styles.infoIcon} />
               <Text style={styles.infoLabel}>Idioma</Text>
               <Text style={styles.infoValor}>{actividad.idioma}</Text>
             </View>
           )}
           {actividad.cuposDisponibles != null && (
             <View style={styles.infoItem}>
-              <Text style={styles.infoIcon}>🎟️</Text>
+              <Ionicons name="ticket-outline" size={20} color="#2196F3" style={styles.infoIcon} />
               <Text style={styles.infoLabel}>Cupos</Text>
               <Text style={styles.infoValor}>{actividad.cuposDisponibles}</Text>
             </View>
@@ -124,7 +135,10 @@ export default function ActividadDetailScreen({ route, navigation }) {
         {actividad.punto_encuentro && (
           <>
             <Text style={styles.seccionLabel}>Punto de encuentro</Text>
-            <Text style={styles.parrafo}>📍 {actividad.punto_encuentro}</Text>
+            <View style={styles.iconRow}>
+              <Ionicons name="location-outline" size={14} color="#555" style={styles.iconGap} />
+              <Text style={styles.parrafo}>{actividad.punto_encuentro}</Text>
+            </View>
           </>
         )}
 
@@ -132,7 +146,10 @@ export default function ActividadDetailScreen({ route, navigation }) {
         {actividad.guia && (
           <>
             <Text style={styles.seccionLabel}>Guía asignado</Text>
-            <Text style={styles.parrafo}>👤 {actividad.guia}</Text>
+            <View style={styles.iconRow}>
+              <Ionicons name="person-outline" size={14} color="#555" style={styles.iconGap} />
+              <Text style={styles.parrafo}>{actividad.guia}</Text>
+            </View>
           </>
         )}
 
@@ -149,7 +166,10 @@ export default function ActividadDetailScreen({ route, navigation }) {
           <>
             <Text style={styles.seccionLabel}>Horarios disponibles</Text>
             {actividad.horarios.map((h, i) => (
-              <Text key={i} style={styles.horario}>• {h}</Text>
+              <View key={i} style={styles.iconRow}>
+                <Ionicons name="ellipse" size={6} color="#666" style={styles.iconGap} />
+                <Text style={styles.horario}>{h}</Text>
+              </View>
             ))}
           </>
         )}
@@ -182,13 +202,15 @@ const styles = StyleSheet.create({
   titleRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 },
   nombre: { fontSize: 22, fontWeight: 'bold', color: '#333', flex: 1, marginRight: 12 },
   metaRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8, flexWrap: 'wrap' },
+  iconRow: { flexDirection: 'row', alignItems: 'center' },
+  iconGap: { marginRight: 4 },
   destino: { fontSize: 14, color: '#666', marginRight: 12 },
   categoria: { fontSize: 12, color: '#2196F3', backgroundColor: '#E3F2FD', paddingHorizontal: 10, paddingVertical: 3, borderRadius: 12 },
   precio: { fontSize: 24, fontWeight: 'bold', color: '#2196F3', marginBottom: 6 },
   rating: { fontSize: 14, color: '#FF9800', marginBottom: 16 },
   infoRapida: { flexDirection: 'row', justifyContent: 'space-around', backgroundColor: '#fff', borderRadius: 10, paddingVertical: 14, marginTop: 12, marginBottom: 4 },
   infoItem: { alignItems: 'center', flex: 1, paddingHorizontal: 4 },
-  infoIcon: { fontSize: 20, marginBottom: 4 },
+  infoIcon: { marginBottom: 4 },
   infoLabel: { fontSize: 11, color: '#999', marginBottom: 2 },
   infoValor: { fontSize: 13, color: '#333', fontWeight: '600', textAlign: 'center' },
   seccionLabel: { fontSize: 16, fontWeight: '700', color: '#333', marginBottom: 8, marginTop: 18 },

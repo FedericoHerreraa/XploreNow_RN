@@ -3,6 +3,7 @@ import {
   View, Text, TextInput, TouchableOpacity,
   StyleSheet, Alert, ActivityIndicator, ScrollView,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { postReview, getReview } from '../../api/apiService';
 import { useAuth } from '../../context/AuthContext';
 
@@ -92,13 +93,25 @@ export default function ReviewScreen({ route }) {
           <Text style={styles.label}>Actividad</Text>
           <View style={styles.starsRow}>
             {[1, 2, 3, 4, 5].map(i => (
-              <Text key={i} style={styles.starStatic}>{i <= review.calificacionActividad ? '⭐' : '☆'}</Text>
+              <Ionicons
+                key={i}
+                name={i <= review.calificacionActividad ? 'star' : 'star-outline'}
+                size={26}
+                color={i <= review.calificacionActividad ? '#FF9800' : '#ccc'}
+                style={styles.starIcon}
+              />
             ))}
           </View>
           <Text style={styles.label}>Guía</Text>
           <View style={styles.starsRow}>
             {[1, 2, 3, 4, 5].map(i => (
-              <Text key={i} style={styles.starStatic}>{i <= review.calificacionGuia ? '⭐' : '☆'}</Text>
+              <Ionicons
+                key={i}
+                name={i <= review.calificacionGuia ? 'star' : 'star-outline'}
+                size={26}
+                color={i <= review.calificacionGuia ? '#FF9800' : '#ccc'}
+                style={styles.starIcon}
+              />
             ))}
           </View>
           {review.comentario ? (
@@ -131,7 +144,12 @@ export default function ReviewScreen({ route }) {
         <View style={styles.starsRow}>
           {[1, 2, 3, 4, 5].map(i => (
             <TouchableOpacity key={i} onPress={() => setCalificacionActividad(i)}>
-              <Text style={styles.starBtn}>{i <= calificacionActividad ? '⭐' : '☆'}</Text>
+              <Ionicons
+                name={i <= calificacionActividad ? 'star' : 'star-outline'}
+                size={34}
+                color={i <= calificacionActividad ? '#FF9800' : '#ccc'}
+                style={styles.starIcon}
+              />
             </TouchableOpacity>
           ))}
         </View>
@@ -140,7 +158,12 @@ export default function ReviewScreen({ route }) {
         <View style={styles.starsRow}>
           {[1, 2, 3, 4, 5].map(i => (
             <TouchableOpacity key={i} onPress={() => setCalificacionGuia(i)}>
-              <Text style={styles.starBtn}>{i <= calificacionGuia ? '⭐' : '☆'}</Text>
+              <Ionicons
+                name={i <= calificacionGuia ? 'star' : 'star-outline'}
+                size={34}
+                color={i <= calificacionGuia ? '#FF9800' : '#ccc'}
+                style={styles.starIcon}
+              />
             </TouchableOpacity>
           ))}
         </View>
@@ -178,8 +201,7 @@ const styles = StyleSheet.create({
   title: { fontSize: 20, fontWeight: 'bold', color: '#333', marginBottom: 20 },
   label: { fontSize: 14, fontWeight: '600', color: '#555', marginBottom: 8, marginTop: 4 },
   starsRow: { flexDirection: 'row', marginBottom: 16 },
-  starBtn: { fontSize: 34, marginRight: 4 },
-  starStatic: { fontSize: 26, marginRight: 4 },
+  starIcon: { marginRight: 4 },
   textarea: { borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 12, fontSize: 14, color: '#333', minHeight: 120, marginBottom: 6 },
   counterText: { color: '#999', fontSize: 12, textAlign: 'right', marginBottom: 16 },
   btn: { backgroundColor: '#2196F3', borderRadius: 10, padding: 16, alignItems: 'center' },
