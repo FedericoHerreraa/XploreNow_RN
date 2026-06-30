@@ -75,18 +75,79 @@ export default function ActividadDetailScreen({ route, navigation }) {
           <Text style={styles.categoria}>{actividad.categoria}</Text>
         </View>
 
-        <Text style={styles.precio}>${actividad.precio}</Text>
+        <Text style={styles.precio}>
+          {actividad.precio === 0 ? 'Gratis' : `$${actividad.precio}`}
+        </Text>
 
         {actividad.rating && (
           <Text style={styles.rating}>⭐ {actividad.rating.toFixed(1)} promedio</Text>
         )}
 
-        <Text style={styles.descripcionLabel}>Descripción</Text>
-        <Text style={styles.descripcion}>{actividad.descripcion}</Text>
+        {/* Datos rápidos: duración, idioma, cupos */}
+        <View style={styles.infoRapida}>
+          {actividad.duracion && (
+            <View style={styles.infoItem}>
+              <Text style={styles.infoIcon}>⏱️</Text>
+              <Text style={styles.infoLabel}>Duración</Text>
+              <Text style={styles.infoValor}>{actividad.duracion}</Text>
+            </View>
+          )}
+          {actividad.idioma && (
+            <View style={styles.infoItem}>
+              <Text style={styles.infoIcon}>🗣️</Text>
+              <Text style={styles.infoLabel}>Idioma</Text>
+              <Text style={styles.infoValor}>{actividad.idioma}</Text>
+            </View>
+          )}
+          {actividad.cuposDisponibles != null && (
+            <View style={styles.infoItem}>
+              <Text style={styles.infoIcon}>🎟️</Text>
+              <Text style={styles.infoLabel}>Cupos</Text>
+              <Text style={styles.infoValor}>{actividad.cuposDisponibles}</Text>
+            </View>
+          )}
+        </View>
 
+        {/* Descripción */}
+        <Text style={styles.seccionLabel}>Descripción</Text>
+        <Text style={styles.parrafo}>{actividad.descripcion}</Text>
+
+        {/* Qué incluye */}
+        {actividad.que_incluye && (
+          <>
+            <Text style={styles.seccionLabel}>Qué incluye</Text>
+            <Text style={styles.parrafo}>{actividad.que_incluye}</Text>
+          </>
+        )}
+
+        {/* Punto de encuentro */}
+        {actividad.punto_encuentro && (
+          <>
+            <Text style={styles.seccionLabel}>Punto de encuentro</Text>
+            <Text style={styles.parrafo}>📍 {actividad.punto_encuentro}</Text>
+          </>
+        )}
+
+        {/* Guía asignado */}
+        {actividad.guia && (
+          <>
+            <Text style={styles.seccionLabel}>Guía asignado</Text>
+            <Text style={styles.parrafo}>👤 {actividad.guia}</Text>
+          </>
+        )}
+
+        {/* Política de cancelación */}
+        {actividad.politica_cancelacion && (
+          <>
+            <Text style={styles.seccionLabel}>Política de cancelación</Text>
+            <Text style={styles.parrafo}>{actividad.politica_cancelacion}</Text>
+          </>
+        )}
+
+        {/* Horarios (si el backend los manda) */}
         {actividad.horarios && actividad.horarios.length > 0 && (
           <>
-            <Text style={styles.descripcionLabel}>Horarios disponibles</Text>
+            <Text style={styles.seccionLabel}>Horarios disponibles</Text>
             {actividad.horarios.map((h, i) => (
               <Text key={i} style={styles.horario}>• {h}</Text>
             ))}
@@ -125,8 +186,13 @@ const styles = StyleSheet.create({
   categoria: { fontSize: 12, color: '#2196F3', backgroundColor: '#E3F2FD', paddingHorizontal: 10, paddingVertical: 3, borderRadius: 12 },
   precio: { fontSize: 24, fontWeight: 'bold', color: '#2196F3', marginBottom: 6 },
   rating: { fontSize: 14, color: '#FF9800', marginBottom: 16 },
-  descripcionLabel: { fontSize: 16, fontWeight: '700', color: '#333', marginBottom: 8, marginTop: 12 },
-  descripcion: { fontSize: 14, color: '#555', lineHeight: 22 },
+  infoRapida: { flexDirection: 'row', justifyContent: 'space-around', backgroundColor: '#fff', borderRadius: 10, paddingVertical: 14, marginTop: 12, marginBottom: 4 },
+  infoItem: { alignItems: 'center', flex: 1, paddingHorizontal: 4 },
+  infoIcon: { fontSize: 20, marginBottom: 4 },
+  infoLabel: { fontSize: 11, color: '#999', marginBottom: 2 },
+  infoValor: { fontSize: 13, color: '#333', fontWeight: '600', textAlign: 'center' },
+  seccionLabel: { fontSize: 16, fontWeight: '700', color: '#333', marginBottom: 8, marginTop: 18 },
+  parrafo: { fontSize: 14, color: '#555', lineHeight: 22 },
   horario: { fontSize: 13, color: '#666', marginBottom: 4 },
   btnReservar: { backgroundColor: '#2196F3', borderRadius: 10, padding: 16, alignItems: 'center', marginTop: 24 },
   btnReservarText: { color: '#fff', fontSize: 16, fontWeight: '700' },
