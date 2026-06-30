@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, TouchableOpacity,
+  View, Text, TouchableOpacity, Linking,
   StyleSheet, Alert, ActivityIndicator, ScrollView,
 } from 'react-native';
 import { getActividadById, cancelarReserva } from '../../api/apiService';
@@ -46,6 +46,17 @@ export default function ReservaDetailScreen({ route, navigation }) {
 
   const politica = actividad?.politica_cancelacion;
   const puedeCancelar = estado !== 'cancelada' && estado !== 'finalizada';
+
+  const abrirComoLlegar = async () => {
+    const direccion = actividad?.punto_encuentro;
+    if (!direccion) return;
+    const url = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(direccion)}`;
+    try {
+      await Linking.openURL(url);
+    } catch {
+      Alert.alert('Error', 'No se pudo abrir la aplicación de mapas.');
+    }
+  };
 
   const handleCancelar = () => {
     const detallePolitica = politica
@@ -117,6 +128,9 @@ export default function ReservaDetailScreen({ route, navigation }) {
               <Text style={styles.label}>Punto de encuentro</Text>
               <Text style={[styles.value, styles.valueWrap]}>{actividad.punto_encuentro}</Text>
             </View>
+            <TouchableOpacity style={styles.btnComoLlegar} onPress={abrirComoLlegar}>
+              <Text style={styles.btnComoLlegarText}>🗺️  Cómo llegar</Text>
+            </TouchableOpacity>
           </>
         )}
 
@@ -208,6 +222,9 @@ const styles = StyleSheet.create({
   value: { fontSize: 15, fontWeight: '600', color: '#333', flexShrink: 1, textAlign: 'right' },
   valueWrap: { flex: 1 },
   divider: { height: 1, backgroundColor: '#f0f0f0' },
+
+  btnComoLlegar: { marginTop: 12, backgroundColor: '#E8F0FE', borderRadius: 10, padding: 12, alignItems: 'center' },
+  btnComoLlegarText: { color: '#1A73E8', fontSize: 15, fontWeight: '700' },
 
   seccionLabel: { fontSize: 16, fontWeight: '700', color: '#333', marginBottom: 8 },
   parrafo: { fontSize: 14, color: '#555', lineHeight: 22 },
