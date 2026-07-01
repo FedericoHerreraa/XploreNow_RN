@@ -135,7 +135,7 @@ export default function ProfileScreen({ navigation }) {
   };
 
   if (loading) {
-    return <View style={styles.centered}><ActivityIndicator size="large" color="#2196F3" /></View>;
+    return <View style={styles.centered}><ActivityIndicator size="large" color="#1565C0" /></View>;
   }
 
   const reservasActivas     = reservas.filter(r => r.estado === 'confirmada');
@@ -155,7 +155,7 @@ export default function ProfileScreen({ navigation }) {
               </View>
           }
           <View style={styles.cameraIcon}>
-            <Ionicons name="camera" size={12} color="#2196F3" />
+            <Ionicons name="camera" size={12} color="#1565C0" />
           </View>
         </TouchableOpacity>
         {!editMode && (
@@ -257,7 +257,7 @@ export default function ProfileScreen({ navigation }) {
             </View>
 
             {saving ? (
-              <ActivityIndicator color="#2196F3" style={{ marginTop: 16 }} />
+              <ActivityIndicator color="#1565C0" style={{ marginTop: 16 }} />
             ) : (
               <View style={styles.row}>
                 <TouchableOpacity
@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
   wrapper:     { flex: 1, backgroundColor: '#F8F9FA' },
   content:     { paddingBottom: 40 },
   centered:    { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  header:      { alignItems: 'center', paddingVertical: 28, backgroundColor: '#2196F3' },
+  header:      { alignItems: 'center', paddingVertical: 28, backgroundColor: '#1565C0' },
   avatarWrapper:  { position: 'relative', marginBottom: 12 },
   avatarCircle:   { width: 84, height: 84, borderRadius: 42, backgroundColor: 'rgba(255,255,255,0.3)', justifyContent: 'center', alignItems: 'center' },
   avatarImage:    { width: 84, height: 84, borderRadius: 42 },
@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
   headerEmail:    { fontSize: 13, color: 'rgba(255,255,255,0.85)', marginTop: 4 },
   statsRow:    { flexDirection: 'row', margin: 16, gap: 10 },
   statCard:    { flex: 1, backgroundColor: '#fff', borderRadius: 12, padding: 14, alignItems: 'center', elevation: 2, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 4 },
-  statNumber:  { fontSize: 24, fontWeight: '700', color: '#2196F3' },
+  statNumber:  { fontSize: 24, fontWeight: '700', color: '#1565C0' },
   statLabel:   { fontSize: 12, color: '#888', marginTop: 2 },
   card:        { marginHorizontal: 16, marginBottom: 12, backgroundColor: '#fff', borderRadius: 12, padding: 20, elevation: 2, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 4 },
   cardTitle:   { fontSize: 15, fontWeight: '700', color: '#333', marginBottom: 12 },
@@ -352,7 +352,7 @@ const styles = StyleSheet.create({
   input:       { borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 12, fontSize: 14, color: '#333', marginBottom: 4, backgroundColor: '#fafafa' },
   prefsRow:    { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 8 },
   prefChip:        { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, borderWidth: 1, borderColor: '#ddd', backgroundColor: '#fafafa' },
-  prefChipActive:  { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: '#2196F3' },
+  prefChipActive:  { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, backgroundColor: '#1565C0' },
   prefChipText:        { fontSize: 13, color: '#666' },
   prefChipTextActive:  { fontSize: 13, color: '#fff', fontWeight: '600' },
   noPrefs:     { color: '#999', fontSize: 13 },
@@ -361,10 +361,10 @@ const styles = StyleSheet.create({
   infoValue:   { fontSize: 14, fontWeight: '600', color: '#333', flex: 1, textAlign: 'right' },
   divider:     { height: 1, backgroundColor: '#f0f0f0' },
   row:         { flexDirection: 'row', marginTop: 8 },
-  btn:         { backgroundColor: '#2196F3', borderRadius: 10, padding: 14, alignItems: 'center', marginTop: 16 },
+  btn:         { backgroundColor: '#1565C0', borderRadius: 10, padding: 14, alignItems: 'center', marginTop: 16 },
   btnText:     { color: '#fff', fontSize: 15, fontWeight: '600' },
-  btnHistorial: { marginHorizontal: 16, marginBottom: 12, borderWidth: 1, borderColor: '#2196F3', borderRadius: 10, padding: 14, alignItems: 'center' },
-  btnHistorialText: { color: '#2196F3', fontSize: 15, fontWeight: '600' },
+  btnHistorial: { marginHorizontal: 16, marginBottom: 12, borderWidth: 1, borderColor: '#1565C0', borderRadius: 10, padding: 14, alignItems: 'center' },
+  btnHistorialText: { color: '#1565C0', fontSize: 15, fontWeight: '600' },
   btnLogout:   { marginHorizontal: 16, marginTop: 4, borderWidth: 1, borderColor: '#F44336', borderRadius: 10, padding: 14, alignItems: 'center' },
   btnLogoutText: { color: '#F44336', fontSize: 15, fontWeight: '600' },
 });

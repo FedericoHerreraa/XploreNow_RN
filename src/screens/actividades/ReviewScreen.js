@@ -82,7 +82,7 @@ export default function ReviewScreen({ route }) {
   };
 
   if (loading) {
-    return <View style={styles.centered}><ActivityIndicator size="large" color="#2196F3" /></View>;
+    return <View style={styles.centered}><ActivityIndicator size="large" color="#1565C0" /></View>;
   }
 
   if (review) {
@@ -183,7 +183,7 @@ export default function ReviewScreen({ route }) {
         <Text style={styles.counterText}>{comentario.length}/300</Text>
 
         {submitting ? (
-          <ActivityIndicator color="#2196F3" style={{ marginTop: 20 }} />
+          <ActivityIndicator color="#1565C0" style={{ marginTop: 20 }} />
         ) : (
           <TouchableOpacity style={styles.btn} onPress={handleEnviar}>
             <Text style={styles.btnText}>Enviar Reseña</Text>
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
   starIcon: { marginRight: 4 },
   textarea: { borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 12, fontSize: 14, color: '#333', minHeight: 120, marginBottom: 6 },
   counterText: { color: '#999', fontSize: 12, textAlign: 'right', marginBottom: 16 },
-  btn: { backgroundColor: '#2196F3', borderRadius: 10, padding: 16, alignItems: 'center' },
+  btn: { backgroundColor: '#1565C0', borderRadius: 10, padding: 16, alignItems: 'center' },
   btnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
   comentarioText: { fontSize: 15, color: '#555', marginTop: 12, lineHeight: 22 },
   noComentario: { fontSize: 14, color: '#999', marginTop: 8, fontStyle: 'italic' },

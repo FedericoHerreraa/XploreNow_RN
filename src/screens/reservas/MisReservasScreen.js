@@ -111,7 +111,7 @@ export default function MisReservasScreen({ navigation }) {
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#2196F3" />
+        <ActivityIndicator size="large" color="#1565C0" />
       </View>
     );
   }
@@ -124,7 +124,7 @@ export default function MisReservasScreen({ navigation }) {
         renderItem={({ item }) => <ReservaItem item={item} onPress={handlePress} />}
         contentContainerStyle={{ paddingBottom: 16 }}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#2196F3']} />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#1565C0']} />
         }
         ListHeaderComponent={
           <View style={styles.header}>
@@ -169,10 +169,10 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 12 },
   filtros: { flexDirection: 'row', flex: 1 },
   filtroChip: { borderWidth: 1, borderColor: '#ddd', borderRadius: 18, paddingHorizontal: 14, paddingVertical: 7, marginRight: 8, backgroundColor: '#fff' },
-  filtroChipSel: { backgroundColor: '#2196F3', borderColor: '#2196F3' },
+  filtroChipSel: { backgroundColor: '#1565C0', borderColor: '#1565C0' },
   filtroText: { fontSize: 13, color: '#555' },
   filtroTextSel: { color: '#fff', fontWeight: '600' },
-  btnNueva: { backgroundColor: '#2196F3', borderRadius: 8, paddingHorizontal: 14, paddingVertical: 8, marginLeft: 4 },
+  btnNueva: { backgroundColor: '#1565C0', borderRadius: 8, paddingHorizontal: 14, paddingVertical: 8, marginLeft: 4 },
   btnNuevaText: { color: '#fff', fontWeight: '600' },
 
   item: { backgroundColor: '#fff', marginHorizontal: 16, marginBottom: 10, borderRadius: 12, padding: 16, elevation: 1, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 3 },

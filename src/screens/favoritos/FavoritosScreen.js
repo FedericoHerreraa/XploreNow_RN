@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   View, Text, FlatList, TouchableOpacity, Image,
   StyleSheet, Alert, ActivityIndicator,
@@ -10,15 +11,22 @@ export default function FavoritosScreen({ navigation }) {
   const [favoritos, setFavoritos] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     load();
-  }, []);
+  }, []));
 
   const load = async () => {
     setLoading(true);
     try {
       const res = await getMisFavoritos();
-      setFavoritos(res.data?.favoritos || res.data || []);
+      const lista = res.data?.favoritos || [];
+      const normalizada = lista.map(f => ({
+        ...f.actividad,
+        actividadId: f.actividadId,
+        tieneNovedad: f.tieneNovedad,
+        tipoNovedad: f.tipoNovedad,
+      }));
+      setFavoritos(normalizada);
     } catch {
       Alert.alert('Error', 'No se pudieron cargar los favoritos');
     } finally {
@@ -27,21 +35,21 @@ export default function FavoritosScreen({ navigation }) {
   };
 
   const handleRemove = async (item) => {
-    const id = item._id || item.id;
+    const id = item.actividadId;
     try {
       await removeFavorito(id);
-      setFavoritos(prev => prev.filter(f => (f._id || f.id) !== id));
+      setFavoritos(prev => prev.filter(f => f.actividadId !== id));
     } catch {
       Alert.alert('Error', 'No se pudo quitar de favoritos');
     }
   };
 
   const handlePress = (item) => {
-    navigation.navigate('ActividadDetail', { actividadId: item._id || item.id });
+    navigation.navigate('ActividadDetail', { actividadId: item.actividadId });
   };
 
   if (loading) {
-    return <View style={styles.centered}><ActivityIndicator size="large" color="#2196F3" /></View>;
+    return <View style={styles.centered}><ActivityIndicator size="large" color="#1565C0" /></View>;
   }
 
   return (
@@ -49,7 +57,7 @@ export default function FavoritosScreen({ navigation }) {
       <Text style={styles.screenTitle}>Mis Favoritos</Text>
       <FlatList
         data={favoritos}
-        keyExtractor={(item) => String(item._id || item.id)}
+        keyExtractor={(item) => String(item.actividadId)}
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.item} onPress={() => handlePress(item)}>
             {item.imagen ? (
@@ -60,7 +68,16 @@ export default function FavoritosScreen({ navigation }) {
             <View style={styles.itemInfo}>
               <Text style={styles.itemNombre} numberOfLines={1}>{item.nombre}</Text>
               <Text style={styles.itemDestino}>{item.destino}</Text>
-              <Text style={styles.itemPrecio}>${item.precio}</Text>
+              <Text style={styles.itemPrecio}>
+                {item.precio === 0 ? 'Gratis' : `$${item.precio}`}
+              </Text>
+              {item.tieneNovedad && (
+                <Text style={styles.novedadBadge}>
+                  {item.tipoNovedad === 'precio' ? 'Precio actualizado' :
+                   item.tipoNovedad === 'cupos' ? 'Cupos actualizados' :
+                   'Actividad actualizada'}
+                </Text>
+              )}
             </View>
             <TouchableOpacity onPress={() => handleRemove(item)} style={styles.removeBtn}>
               <Ionicons name="heart" size={24} color="#F44336" />
@@ -83,7 +100,8 @@ const styles = StyleSheet.create({
   itemInfo: { flex: 1, padding: 12 },
   itemNombre: { fontSize: 14, fontWeight: '600', color: '#333' },
   itemDestino: { fontSize: 12, color: '#666', marginTop: 3 },
-  itemPrecio: { fontSize: 14, fontWeight: '700', color: '#2196F3', marginTop: 6 },
+  itemPrecio: { fontSize: 14, fontWeight: '700', color: '#1565C0', marginTop: 6 },
   removeBtn: { padding: 12, justifyContent: 'center' },
   emptyText: { textAlign: 'center', color: '#999', marginTop: 48, fontSize: 15 },
+  novedadBadge: { marginTop: 4, fontSize: 11, color: '#FF9800', fontWeight: '600' },
 });

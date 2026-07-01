@@ -15,16 +15,19 @@ export default function ActividadDetailScreen({ route, navigation }) {
   useEffect(() => {
     const load = async () => {
       try {
-        const [actRes, favRes] = await Promise.all([
-          getActividadById(actividadId),
-          checkFavorito(actividadId),
-        ]);
+        const actRes = await getActividadById(actividadId);
         setActividad(actRes.data);
-        setEsFavorito(favRes.data?.esFavorito ?? false);
       } catch (e) {
+        console.error('Error cargando actividad:', e?.response?.status, e?.response?.data, e?.message);
         Alert.alert('Error', 'No se pudo cargar la actividad');
       } finally {
         setLoading(false);
+      }
+      try {
+        const favRes = await checkFavorito(actividadId);
+        setEsFavorito(favRes.data?.esFavorito ?? false);
+      } catch {
+        // favoritos no crítico, se ignora si falla
       }
     };
     load();
@@ -44,7 +47,7 @@ export default function ActividadDetailScreen({ route, navigation }) {
   };
 
   if (loading) {
-    return <View style={styles.centered}><ActivityIndicator size="large" color="#2196F3" /></View>;
+    return <View style={styles.centered}><ActivityIndicator size="large" color="#1565C0" /></View>;
   }
 
   if (!actividad) return null;
@@ -98,21 +101,21 @@ export default function ActividadDetailScreen({ route, navigation }) {
         <View style={styles.infoRapida}>
           {actividad.duracion && (
             <View style={styles.infoItem}>
-              <Ionicons name="time-outline" size={20} color="#2196F3" style={styles.infoIcon} />
+              <Ionicons name="time-outline" size={20} color="#1565C0" style={styles.infoIcon} />
               <Text style={styles.infoLabel}>Duración</Text>
               <Text style={styles.infoValor}>{actividad.duracion}</Text>
             </View>
           )}
           {actividad.idioma && (
             <View style={styles.infoItem}>
-              <Ionicons name="chatbubble-outline" size={20} color="#2196F3" style={styles.infoIcon} />
+              <Ionicons name="chatbubble-outline" size={20} color="#1565C0" style={styles.infoIcon} />
               <Text style={styles.infoLabel}>Idioma</Text>
               <Text style={styles.infoValor}>{actividad.idioma}</Text>
             </View>
           )}
           {actividad.cuposDisponibles != null && (
             <View style={styles.infoItem}>
-              <Ionicons name="ticket-outline" size={20} color="#2196F3" style={styles.infoIcon} />
+              <Ionicons name="ticket-outline" size={20} color="#1565C0" style={styles.infoIcon} />
               <Text style={styles.infoLabel}>Cupos</Text>
               <Text style={styles.infoValor}>{actividad.cuposDisponibles}</Text>
             </View>
@@ -205,8 +208,8 @@ const styles = StyleSheet.create({
   iconRow: { flexDirection: 'row', alignItems: 'center' },
   iconGap: { marginRight: 4 },
   destino: { fontSize: 14, color: '#666', marginRight: 12 },
-  categoria: { fontSize: 12, color: '#2196F3', backgroundColor: '#E3F2FD', paddingHorizontal: 10, paddingVertical: 3, borderRadius: 12 },
-  precio: { fontSize: 24, fontWeight: 'bold', color: '#2196F3', marginBottom: 6 },
+  categoria: { fontSize: 12, color: '#1565C0', backgroundColor: '#E3F2FD', paddingHorizontal: 10, paddingVertical: 3, borderRadius: 12 },
+  precio: { fontSize: 24, fontWeight: 'bold', color: '#1565C0', marginBottom: 6 },
   rating: { fontSize: 14, color: '#FF9800', marginBottom: 16 },
   infoRapida: { flexDirection: 'row', justifyContent: 'space-around', backgroundColor: '#fff', borderRadius: 10, paddingVertical: 14, marginTop: 12, marginBottom: 4 },
   infoItem: { alignItems: 'center', flex: 1, paddingHorizontal: 4 },
@@ -216,8 +219,8 @@ const styles = StyleSheet.create({
   seccionLabel: { fontSize: 16, fontWeight: '700', color: '#333', marginBottom: 8, marginTop: 18 },
   parrafo: { fontSize: 14, color: '#555', lineHeight: 22 },
   horario: { fontSize: 13, color: '#666', marginBottom: 4 },
-  btnReservar: { backgroundColor: '#2196F3', borderRadius: 10, padding: 16, alignItems: 'center', marginTop: 24 },
+  btnReservar: { backgroundColor: '#1565C0', borderRadius: 10, padding: 16, alignItems: 'center', marginTop: 24 },
   btnReservarText: { color: '#fff', fontSize: 16, fontWeight: '700' },
-  btnReview: { borderWidth: 1, borderColor: '#2196F3', borderRadius: 10, padding: 14, alignItems: 'center', marginTop: 12, marginBottom: 24 },
-  btnReviewText: { color: '#2196F3', fontSize: 15, fontWeight: '600' },
+  btnReview: { borderWidth: 1, borderColor: '#1565C0', borderRadius: 10, padding: 14, alignItems: 'center', marginTop: 12, marginBottom: 24 },
+  btnReviewText: { color: '#1565C0', fontSize: 15, fontWeight: '600' },
 });
