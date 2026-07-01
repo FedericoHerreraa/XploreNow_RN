@@ -83,7 +83,7 @@ export default function RegisterScreen({ navigation }) {
         />
 
         {loading ? (
-          <ActivityIndicator size="large" color="#2196F3" style={{ marginTop: 20 }} />
+          <ActivityIndicator size="large" color="#1565C0" style={{ marginTop: 20 }} />
         ) : (
           <>
             <TouchableOpacity style={styles.btnPrimary} onPress={handleRegister}>
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: '#2196F3',
+    color: '#1565C0',
     textAlign: 'center',
     marginBottom: 8,
   },
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   btnPrimary: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#1565C0',
     borderRadius: 10,
     padding: 16,
     alignItems: 'center',
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   link: {
-    color: '#2196F3',
+    color: '#1565C0',
     fontSize: 14,
     fontWeight: '600',
   },

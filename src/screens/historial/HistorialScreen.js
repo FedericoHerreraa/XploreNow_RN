@@ -123,7 +123,7 @@ export default function HistorialScreen({ navigation }) {
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#2196F3" style={{ marginTop: 32 }} />
+        <ActivityIndicator size="large" color="#1565C0" style={{ marginTop: 32 }} />
       ) : (
         <FlatList
           data={historial}
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   filterBox: { backgroundColor: '#fff', padding: 16, elevation: 2, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 4 },
   filterTitle: { fontSize: 16, fontWeight: '700', color: '#333', marginBottom: 12 },
   input: { borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 10, marginBottom: 8, fontSize: 14, color: '#333', backgroundColor: '#fafafa' },
-  btnFiltrar: { backgroundColor: '#2196F3', borderRadius: 8, padding: 12, alignItems: 'center' },
+  btnFiltrar: { backgroundColor: '#1565C0', borderRadius: 8, padding: 12, alignItems: 'center' },
   btnFiltrarText: { color: '#fff', fontWeight: '600', fontSize: 15 },
   item: { backgroundColor: '#fff', marginHorizontal: 16, marginTop: 10, borderRadius: 12, padding: 16, elevation: 1, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 3 },
   itemContent: { marginBottom: 12 },
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
   itemHorario: { fontSize: 13, color: '#666', marginBottom: 2 },
   itemDestino: { fontSize: 13, color: '#666' },
   actions: { alignItems: 'flex-start' },
-  btnCalificar: { backgroundColor: '#2196F3', borderRadius: 8, paddingHorizontal: 16, paddingVertical: 10, alignItems: 'center' },
+  btnCalificar: { backgroundColor: '#1565C0', borderRadius: 8, paddingHorizontal: 16, paddingVertical: 10, alignItems: 'center' },
   btnCalificarDisabled: { opacity: 0.4 },
   btnCalificarText: { color: '#fff', fontWeight: '600', fontSize: 14 },
   vencidaText: { color: '#999', fontSize: 12, marginTop: 6 },

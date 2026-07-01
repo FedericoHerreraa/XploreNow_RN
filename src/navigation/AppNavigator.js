@@ -46,10 +46,10 @@ function MainTabs() {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: '#2196F3',
+        tabBarActiveTintColor: '#1565C0',
         tabBarInactiveTintColor: '#666666',
         headerShown: true,
-        headerStyle: { backgroundColor: '#2196F3' },
+        headerStyle: { backgroundColor: '#1565C0' },
         headerTintColor: '#fff',
         headerTitleStyle: { fontWeight: '700', fontSize: 18 },
       }}
@@ -144,7 +144,7 @@ export default function AppNavigator() {
   if (isLoading) {
     return (
       <View style={styles.loading}>
-        <ActivityIndicator size="large" color="#2196F3" />
+        <ActivityIndicator size="large" color="#1565C0" />
       </View>
     );
   }

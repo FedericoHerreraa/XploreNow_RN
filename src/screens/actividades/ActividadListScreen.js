@@ -4,7 +4,7 @@ import {
   StyleSheet, Alert, ActivityIndicator, Image, ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { getActividades, addFavorito, removeFavorito, checkFavorito } from '../../api/apiService';
+import { getActividades, getMisFavoritos, addFavorito, removeFavorito } from '../../api/apiService';
 
 const CATEGORIAS = [
   '',
@@ -52,11 +52,25 @@ export default function ActividadListScreen({ navigation }) {
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [favoritosIds, setFavoritosIds] = useState(new Set());
 
   useEffect(() => {
     fetchDestacadas();
-    fetchActividades(1, true);
+    fetchFavoritosYActividades();
   }, []);
+
+  const fetchFavoritosYActividades = async () => {
+    let ids = new Set();
+    try {
+      const favRes = await getMisFavoritos();
+      const lista = favRes.data?.favoritos || [];
+      ids = new Set(lista.map(f => f.actividadId));
+      setFavoritosIds(ids);
+    } catch {
+      // si falla, continuamos sin marcar favoritos
+    }
+    fetchActividades(1, true, ids);
+  };
 
   const fetchDestacadas = async () => {
     try {
@@ -67,7 +81,7 @@ export default function ActividadListScreen({ navigation }) {
     }
   };
 
-  const fetchActividades = async (pageNum = 1, reset = false) => {
+  const fetchActividades = async (pageNum = 1, reset = false, ids = favoritosIds) => {
     if (pageNum === 1) setLoading(true);
     else setLoadingMore(true);
     try {
@@ -78,7 +92,10 @@ export default function ActividadListScreen({ navigation }) {
       if (precioMax) params.precio_max = precioMax;
       if (fecha) params.fecha = fecha;
       const res = await getActividades(params);
-      const items = res.data?.results || [];
+      const items = (res.data?.results || []).map(a => ({
+        ...a,
+        esFavorito: ids.has(a.id),
+      }));
       const totalPages = res.data?.total_pages || 1;
       setActividades(prev => reset ? items : [...prev, ...items]);
       setHasMore(pageNum < totalPages);
@@ -98,11 +115,12 @@ export default function ActividadListScreen({ navigation }) {
   };
 
   const handlePress = (item) => {
-    navigation.navigate('ActividadDetail', { actividadId: item._id || item.id });
+    navigation.navigate('ActividadDetail', { actividadId: item.id });
   };
 
   const handleToggleFav = async (item) => {
-    const id = item._id || item.id;
+    const id = item.id;
+    const nuevoEstado = !item.esFavorito;
     try {
       if (item.esFavorito) {
         await removeFavorito(id);
@@ -110,8 +128,13 @@ export default function ActividadListScreen({ navigation }) {
         await addFavorito(id);
       }
       setActividades(prev =>
-        prev.map(a => (a._id || a.id) === id ? { ...a, esFavorito: !a.esFavorito } : a)
+        prev.map(a => a.id === id ? { ...a, esFavorito: nuevoEstado } : a)
       );
+      setFavoritosIds(prev => {
+        const next = new Set(prev);
+        nuevoEstado ? next.add(id) : next.delete(id);
+        return next;
+      });
     } catch {
       Alert.alert('Error', 'No se pudo actualizar favorito');
     }
@@ -180,7 +203,7 @@ export default function ActividadListScreen({ navigation }) {
         ListEmptyComponent={!loading && <Text style={styles.emptyText}>Sin resultados</Text>}
         ListFooterComponent={() => (
           <>
-            {loadingMore && <ActivityIndicator color="#2196F3" style={{ margin: 16 }} />}
+            {loadingMore && <ActivityIndicator color="#1565C0" style={{ margin: 16 }} />}
             {hasMore && !loadingMore && (
               <TouchableOpacity style={styles.btnMore} onPress={handleLoadMore}>
                 <Text style={styles.btnMoreText}>Cargar más</Text>
@@ -191,7 +214,7 @@ export default function ActividadListScreen({ navigation }) {
       />
       {loading && (
         <View style={styles.loadingOverlay}>
-          <ActivityIndicator size="large" color="#2196F3" />
+          <ActivityIndicator size="large" color="#1565C0" />
         </View>
       )}
     </View>
@@ -204,10 +227,10 @@ const styles = StyleSheet.create({
   input: { borderWidth: 1, borderColor: '#ddd', borderRadius: 8, padding: 10, marginBottom: 8, fontSize: 14, color: '#333', backgroundColor: '#fafafa' },
   row: { flexDirection: 'row' },
   catChip: { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20, borderWidth: 1, borderColor: '#ddd', marginRight: 8, backgroundColor: '#fafafa' },
-  catChipActive: { backgroundColor: '#2196F3', borderColor: '#2196F3' },
+  catChipActive: { backgroundColor: '#1565C0', borderColor: '#1565C0' },
   catChipText: { fontSize: 13, color: '#666' },
   catChipTextActive: { color: '#fff' },
-  btnBuscar: { backgroundColor: '#2196F3', borderRadius: 8, padding: 12, alignItems: 'center' },
+  btnBuscar: { backgroundColor: '#1565C0', borderRadius: 8, padding: 12, alignItems: 'center' },
   btnBuscarText: { color: '#fff', fontWeight: '600', fontSize: 15 },
   sectionTitle: { fontSize: 16, fontWeight: '700', color: '#333', marginHorizontal: 16, marginTop: 16, marginBottom: 8 },
   item: { flexDirection: 'row', backgroundColor: '#fff', marginHorizontal: 16, marginBottom: 10, borderRadius: 12, overflow: 'hidden', elevation: 1, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 3 },
@@ -216,13 +239,13 @@ const styles = StyleSheet.create({
   itemNombre: { fontSize: 14, fontWeight: '600', color: '#333' },
   itemDestino: { fontSize: 12, color: '#666', marginTop: 2 },
   itemCategoria: { fontSize: 11, color: '#999', marginTop: 2 },
-  itemPrecio: { fontSize: 14, fontWeight: '700', color: '#2196F3', marginTop: 4 },
+  itemPrecio: { fontSize: 14, fontWeight: '700', color: '#1565C0', marginTop: 4 },
   favBtn: { padding: 12, justifyContent: 'center' },
   destacadaCard: { width: 130, marginRight: 10, borderRadius: 10, overflow: 'hidden', backgroundColor: '#fff', elevation: 1 },
   destacadaImage: { width: '100%', height: 80 },
   destacadaNombre: { fontSize: 12, fontWeight: '600', color: '#333', padding: 6 },
   emptyText: { textAlign: 'center', color: '#999', margin: 24 },
-  btnMore: { margin: 16, padding: 12, borderRadius: 8, borderWidth: 1, borderColor: '#2196F3', alignItems: 'center' },
-  btnMoreText: { color: '#2196F3', fontWeight: '600' },
+  btnMore: { margin: 16, padding: 12, borderRadius: 8, borderWidth: 1, borderColor: '#1565C0', alignItems: 'center' },
+  btnMoreText: { color: '#1565C0', fontWeight: '600' },
   loadingOverlay: { ...StyleSheet.absoluteFillObject, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(248,249,250,0.7)' },
 });

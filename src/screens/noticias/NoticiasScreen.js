@@ -153,7 +153,7 @@ export default function ReservaDetailScreen({ route, navigation }) {
       <View style={styles.card}>
         <Text style={styles.seccionLabel}>Política de cancelación</Text>
         {loadingAct ? (
-          <ActivityIndicator color="#2196F3" style={{ marginTop: 8 }} />
+          <ActivityIndicator color="#1565C0" style={{ marginTop: 8 }} />
         ) : (
           <Text style={styles.parrafo}>
             {politica || 'No se especificó una política de cancelación para esta actividad.'}
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
   btnCancelar: { borderWidth: 1, borderColor: '#F44336', borderRadius: 10, padding: 14, alignItems: 'center' },
   btnCancelarText: { color: '#F44336', fontSize: 15, fontWeight: '600' },
   noCancelable: { textAlign: 'center', color: '#999', fontSize: 14, paddingVertical: 8 },
-  btnVer: { marginTop: 12, backgroundColor: '#2196F3', borderRadius: 10, padding: 14, alignItems: 'center' },
+  btnVer: { marginTop: 12, backgroundColor: '#1565C0', borderRadius: 10, padding: 14, alignItems: 'center' },
   btnVerText: { color: '#fff', fontSize: 15, fontWeight: '600' },
   btnVoucher: { marginTop: 12, backgroundColor: '#4CAF50', borderRadius: 10, padding: 14, alignItems: 'center' },
   btnVoucherText: { color: '#fff', fontSize: 15, fontWeight: '600' },

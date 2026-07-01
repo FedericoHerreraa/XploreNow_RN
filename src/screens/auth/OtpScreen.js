@@ -87,7 +87,7 @@ export default function OtpScreen({ route }) {
       />
 
       {loading ? (
-        <ActivityIndicator size="large" color="#2196F3" style={{ marginTop: 20 }} />
+        <ActivityIndicator size="large" color="#1565C0" style={{ marginTop: 20 }} />
       ) : (
         <>
           <TouchableOpacity style={styles.btn} onPress={handleVerify}>
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   email: {
-    color: '#2196F3',
+    color: '#1565C0',
     fontWeight: '600',
   },
   input: {
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   btn: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#1565C0',
     borderRadius: 10,
     padding: 16,
     alignItems: 'center',
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     opacity: 0.4,
   },
   btnResendText: {
-    color: '#2196F3',
+    color: '#1565C0',
     fontSize: 15,
     fontWeight: '600',
   },

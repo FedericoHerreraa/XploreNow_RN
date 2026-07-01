@@ -71,7 +71,7 @@ export default function HomeScreen({ navigation }) {
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#2196F3" />
+        <ActivityIndicator size="large" color="#1565C0" />
       </View>
     );
   }
@@ -126,7 +126,7 @@ export default function HomeScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: '#2196F3' },
+  safeArea: { flex: 1, backgroundColor: '#1565C0' },
   container: { flex: 1, backgroundColor: '#F8F9FA' },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   header: {
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#2196F3',
+    backgroundColor: '#1565C0',
   },
   saludo: { fontSize: 22, fontWeight: 'bold', color: '#fff' },
   subSaludo: { fontSize: 14, color: 'rgba(255,255,255,0.85)', marginTop: 2 },
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   cardImagePlaceholder: { backgroundColor: '#ddd' },
   cardNombre: { fontSize: 13, fontWeight: '600', color: '#333', padding: 8, paddingBottom: 2 },
   cardDestino: { fontSize: 12, color: '#666', paddingHorizontal: 8 },
-  cardPrecio: { fontSize: 13, fontWeight: '700', color: '#2196F3', padding: 8, paddingTop: 4 },
+  cardPrecio: { fontSize: 13, fontWeight: '700', color: '#1565C0', padding: 8, paddingTop: 4 },
   noticiaCard: {
     width: 200,
     marginRight: 12,

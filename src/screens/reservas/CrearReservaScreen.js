@@ -125,7 +125,7 @@ export default function CrearReservaScreen({ route, navigation }) {
   if (loadingAct) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#2196F3" />
+        <ActivityIndicator size="large" color="#1565C0" />
       </View>
     );
   }
@@ -133,7 +133,7 @@ export default function CrearReservaScreen({ route, navigation }) {
   if (!actividadId) {
     return (
       <View style={styles.centered}>
-        <Ionicons name="compass-outline" size={48} color="#2196F3" style={{ marginBottom: 12 }} />
+        <Ionicons name="compass-outline" size={48} color="#1565C0" style={{ marginBottom: 12 }} />
         <Text style={styles.emptyTitle}>Elegí una actividad</Text>
         <Text style={styles.emptyText}>
           Para reservar, primero seleccioná una actividad desde el catálogo.
@@ -224,7 +224,7 @@ export default function CrearReservaScreen({ route, navigation }) {
             onPress={decParticipantes}
             disabled={participantes <= 1}
           >
-            <Ionicons name="remove" size={22} color="#2196F3" />
+            <Ionicons name="remove" size={22} color="#1565C0" />
           </TouchableOpacity>
           <Text style={styles.stepValue}>{participantes}</Text>
           <TouchableOpacity
@@ -235,7 +235,7 @@ export default function CrearReservaScreen({ route, navigation }) {
             onPress={incParticipantes}
             disabled={cupos != null && participantes >= cupos}
           >
-            <Ionicons name="add" size={22} color="#2196F3" />
+            <Ionicons name="add" size={22} color="#1565C0" />
           </TouchableOpacity>
         </View>
 
@@ -251,7 +251,7 @@ export default function CrearReservaScreen({ route, navigation }) {
 
         {/* Confirmar */}
         {submitting ? (
-          <ActivityIndicator color="#2196F3" style={{ marginTop: 20 }} />
+          <ActivityIndicator color="#1565C0" style={{ marginTop: 20 }} />
         ) : (
           <TouchableOpacity
             style={[styles.btn, !puedeConfirmar && styles.btnDisabled]}
@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
   resumenDestinoRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
   resumenDestino: { fontSize: 13, color: '#666' },
   resumenRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  resumenPrecio: { fontSize: 18, fontWeight: 'bold', color: '#2196F3' },
+  resumenPrecio: { fontSize: 18, fontWeight: 'bold', color: '#1565C0' },
   cuposPill: { fontSize: 12, color: '#2E7D32', backgroundColor: '#E8F5E9', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12, overflow: 'hidden' },
   cuposPillRojo: { color: '#C62828', backgroundColor: '#FFEBEE' },
 
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
   chipsRow: { flexDirection: 'row', marginBottom: 12 },
   chipsWrap: { flexDirection: 'row', flexWrap: 'wrap', marginBottom: 12 },
   chip: { borderWidth: 1, borderColor: '#ddd', borderRadius: 20, paddingHorizontal: 14, paddingVertical: 8, marginRight: 8, marginBottom: 8, backgroundColor: '#fafafa' },
-  chipSel: { backgroundColor: '#2196F3', borderColor: '#2196F3' },
+  chipSel: { backgroundColor: '#1565C0', borderColor: '#1565C0' },
   chipText: { fontSize: 13, color: '#555' },
   chipTextSel: { color: '#fff', fontWeight: '600' },
 
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
 
   errorMsg: { color: '#C62828', fontSize: 13, marginTop: 4, marginBottom: 4 },
 
-  btn: { backgroundColor: '#2196F3', borderRadius: 10, padding: 16, alignItems: 'center', marginTop: 16 },
+  btn: { backgroundColor: '#1565C0', borderRadius: 10, padding: 16, alignItems: 'center', marginTop: 16 },
   btnDisabled: { backgroundColor: '#B0BEC5' },
   btnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
 

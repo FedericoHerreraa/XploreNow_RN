@@ -77,7 +77,7 @@ export default function ScanQRScreen({ navigation }) {
 const styles = StyleSheet.create({
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24, backgroundColor: '#F8F9FA' },
   info: { fontSize: 16, color: '#333', textAlign: 'center', marginBottom: 16 },
-  btn: { backgroundColor: '#2196F3', borderRadius: 10, paddingHorizontal: 24, paddingVertical: 14 },
+  btn: { backgroundColor: '#1565C0', borderRadius: 10, paddingHorizontal: 24, paddingVertical: 14 },
   btnText: { color: '#fff', fontWeight: '700', fontSize: 15 },
   overlay: { position: 'absolute', bottom: 60, left: 0, right: 0, alignItems: 'center' },
   overlayText: { color: '#fff', fontSize: 16, backgroundColor: 'rgba(0,0,0,0.6)', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 8 },

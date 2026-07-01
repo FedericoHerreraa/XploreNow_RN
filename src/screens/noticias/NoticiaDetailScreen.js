@@ -49,6 +49,6 @@ const styles = StyleSheet.create({
   titulo: { fontSize: 22, fontWeight: 'bold', color: '#333', marginBottom: 6 },
   fecha: { fontSize: 13, color: '#999', marginBottom: 14 },
   descripcion: { fontSize: 15, color: '#555', lineHeight: 24 },
-  btnVer: { marginTop: 24, backgroundColor: '#2196F3', borderRadius: 10, padding: 14, alignItems: 'center' },
+  btnVer: { marginTop: 24, backgroundColor: '#1565C0', borderRadius: 10, padding: 14, alignItems: 'center' },
   btnVerText: { color: '#fff', fontSize: 15, fontWeight: '600' },
 });
