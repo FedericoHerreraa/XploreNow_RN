@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -6,6 +6,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 
 import { useAuth } from '../context/AuthContext';
+import { navigationRef, flushPendingNavigation } from './navigationRef';
+import { registerForPushNotificationsAsync, addNotificationListeners } from '../services/pushNotifications';
 
 import LoginScreen from '../screens/auth/LoginScreen';
 import OtpScreen from '../screens/auth/OtpScreen';
@@ -141,6 +143,16 @@ function MainStack() {
 export default function AppNavigator() {
   const { token, isLoading } = useAuth();
 
+  useEffect(() => {
+    if (!token) return;
+    registerForPushNotificationsAsync();
+  }, [token]);
+
+  useEffect(() => {
+    const removeListeners = addNotificationListeners();
+    return removeListeners;
+  }, []);
+
   if (isLoading) {
     return (
       <View style={styles.loading}>
@@ -150,7 +162,7 @@ export default function AppNavigator() {
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef} onReady={flushPendingNavigation}>
       {token ? <MainStack /> : <AuthStack />}
     </NavigationContainer>
   );

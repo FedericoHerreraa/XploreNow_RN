@@ -86,3 +86,10 @@ export const checkFavorito = (actividadId) =>
 // Noticias
 export const getNoticias = () =>
   api.get('/noticias');
+
+// Notificaciones push
+export const registerDevice = (pushToken, platform) =>
+  api.post('/notifications/register-device', { pushToken, platform });
+
+export const unregisterDevice = (pushToken) =>
+  api.post('/notifications/unregister-device', { pushToken });
